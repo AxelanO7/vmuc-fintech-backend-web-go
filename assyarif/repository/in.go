@@ -2,7 +2,6 @@ package repository
 
 import (
 	"assyarif-backend-web-go/domain"
-	"errors"
 	"fmt"
 
 	"gorm.io/gorm"
@@ -27,7 +26,7 @@ func (a *posgreInRepository) RetrieveIns() ([]domain.In, error) {
 		return []domain.In{}, err
 	}
 	if len(res) == 0 {
-		return []domain.In{}, errors.New("data not found")
+		return []domain.In{}, nil
 	}
 	fmt.Println(res)
 	return res, nil

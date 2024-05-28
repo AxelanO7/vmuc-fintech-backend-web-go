@@ -32,3 +32,67 @@ func (a *posgreOutRepository) RetrieveOuts() ([]domain.Out, error) {
 	fmt.Println(res)
 	return res, nil
 }
+
+func (a *posgreOutRepository) RetrieveOutLastNumber() (int, error) {
+	var res []domain.Out
+	a.DB.
+		Model(domain.Out{}).
+		Find(&res)
+
+	lastNumber := 0
+	for _, v := range res {
+		fmt.Println(v.ID)
+		if v.ID > uint(lastNumber) {
+			lastNumber = int(v.ID)
+		}
+
+	}
+
+	fmt.Println(lastNumber)
+	return lastNumber, nil
+}
+
+func (a *posgreOutRepository) CreateOut(out domain.Out) (domain.Out, error) {
+	err := a.DB.
+		Model(domain.Out{}).
+		Create(&out).Error
+	if err != nil {
+		return domain.Out{}, err
+	}
+	return out, nil
+}
+
+func (a *posgreOutRepository) RetrieveOutById(id string) (domain.Out, error) {
+	var res domain.Out
+	err := a.DB.
+		Model(domain.Out{}).
+		Where("id = ?", id).
+		First(&res).Error
+	if err != nil {
+		return domain.Out{}, err
+	}
+	return res, nil
+}
+
+func (a *posgreOutRepository) UpdateOutById(out domain.Out) (domain.Out, error) {
+	err := a.DB.
+		Model(domain.Out{}).
+		Where("id = ?", out.ID).
+		Updates(&out).Error
+	if err != nil {
+		return domain.Out{}, err
+	}
+	return out, nil
+}
+
+func (a *posgreOutRepository) RemoveOutById(id string) error {
+	var res domain.Out
+	err := a.DB.
+		Model(domain.Out{}).
+		Where("id = ?", id).
+		Delete(&res).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

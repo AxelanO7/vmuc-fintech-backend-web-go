@@ -21,8 +21,18 @@ type In struct {
 
 type InRepository interface {
 	RetrieveIns() ([]In, error)
+	RetrieveInById(id string) (In, error)
+	RetrieveInLastNumber() (int, error)
+	CreateIn(in In) (In, error)
+	UpdateInById(in In) (In, error)
+	RemoveInById(id string) error
 }
 
 type InUseCase interface {
-	GetIns(ctx context.Context) ([]In, error)
+	ShowIns(ctx context.Context) ([]In, error)
+	ShowInById(ctx context.Context, id string) (In, error)
+	ShowInLastNumber(ctx context.Context) (int, error)
+	AddIn(ctx context.Context, in In) (In, error)
+	EditInById(ctx context.Context, in In) (In, error)
+	DeleteInById(ctx context.Context, id string) error
 }

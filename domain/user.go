@@ -19,14 +19,9 @@ type User struct {
 }
 
 type CreateUser struct {
-	ID uint `json:"id"`
-	// Nim             *uint   `json:"nim"`
 	Username *string `json:"username"`
 	Role     string  `json:"role"`
-	// NamaOrmawa      *string `json:"nama_ormawa"`
-	// Status          *int   `json:"status"`
-	Password        string `json:"password"`
-	ConfirmPassword string `json:"confirm_password"`
+	Password string  `json:"password"`
 }
 
 type TokenClaims struct {
@@ -40,10 +35,19 @@ type LoginPayload struct {
 }
 
 type UserRepository interface {
-	GetUser(username string) (*User, error)
-	GetUserById(id uint) (*User, error)
+	RetrieveAllUser() ([]User, error)
+	RetrieveByUsername(username string) (*User, error)
+	RetrieveUserByID(id uint) (*User, error)
+	CreateUser(user *User) (*User, error)
+	UpdateUser(user *User) (*User, error)
+	DeleteUser(id uint) error
 }
 
 type UserUseCase interface {
+	FetchUsers(ctx context.Context) ([]User, error)
 	LoginUser(ctx context.Context, req *LoginPayload) (*User, string, error)
+	FetchUserByID(ctx context.Context, id uint) (*User, error)
+	CreateUser(ctx context.Context, req *User) (*User, error)
+	UpdateUser(ctx context.Context, req *User) (*User, error)
+	DeleteUser(ctx context.Context, id uint) error
 }

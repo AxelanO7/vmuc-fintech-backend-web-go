@@ -22,7 +22,7 @@ func NewUserUseCase(usr domain.UserRepository, t time.Duration) domain.UserUseCa
 }
 
 func (c *userUseCase) LoginUser(ctx context.Context, req *domain.LoginPayload) (*domain.User, string, error) {
-	res, err := c.userRepository.GetUser(*req.Username)
+	res, err := c.userRepository.RetrieveByUsername(*req.Username)
 	if err != nil {
 		return nil, "", err
 	}
@@ -38,4 +38,44 @@ func (c *userUseCase) LoginUser(ctx context.Context, req *domain.LoginPayload) (
 		return nil, "", fmt.Errorf("cannot create token: %v", err)
 	}
 	return res, token, nil
+}
+
+func (c *userUseCase) FetchUserByID(ctx context.Context, id uint) (*domain.User, error) {
+	res, err := c.userRepository.RetrieveUserByID(id)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (c *userUseCase) FetchUsers(ctx context.Context) ([]domain.User, error) {
+	res, err := c.userRepository.RetrieveAllUser()
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (c *userUseCase) CreateUser(ctx context.Context, req *domain.User) (*domain.User, error) {
+	res, err := c.userRepository.CreateUser(req)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (c *userUseCase) UpdateUser(ctx context.Context, req *domain.User) (*domain.User, error) {
+	res, err := c.userRepository.UpdateUser(req)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (c *userUseCase) DeleteUser(ctx context.Context, id uint) error {
+	err := c.userRepository.DeleteUser(id)
+	if err != nil {
+		return err
+	}
+	return nil
 }

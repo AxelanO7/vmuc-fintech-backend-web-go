@@ -1,9 +1,9 @@
 package middleware
 
 import (
+	"assyarif-backend-web-go/assyarif/repository"
 	"assyarif-backend-web-go/db"
 	"assyarif-backend-web-go/domain"
-	"assyarif-backend-web-go/assyarif/repository"
 	"assyarif-backend-web-go/utils/fiberutil"
 	"fmt"
 	"strconv"
@@ -17,9 +17,9 @@ import (
 const SecretKey = "your-secret-key"
 
 func UserID(c *fiber.Ctx) int64 {
-	studentId, err := strconv.Atoi(fmt.Sprintf("%v", c.Locals("id")))
+	userId, err := strconv.Atoi(fmt.Sprintf("%v", c.Locals("id")))
 	if err == nil {
-		return int64(studentId)
+		return int64(userId)
 	}
 	return -1
 }
@@ -43,7 +43,7 @@ func CreateToken(fill *domain.TokenClaims) (string, error) {
 	return signedToken, nil
 }
 
-func ValidateTokenOrmawa(c *fiber.Ctx) error {
+func ValidateToken(c *fiber.Ctx) error {
 	authHeaders := c.Get("Authorization")
 	if !strings.Contains(authHeaders, "Bearer") {
 		return fiberutil.ReturnStatusUnauthorized(c)
@@ -64,46 +64,6 @@ func ValidateTokenOrmawa(c *fiber.Ctx) error {
 			"status":  "Error",
 			"message": "token is not valid",
 			"error":   err.Error(),
-		})
-	} else if resp.Role != "ormawa" {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"status":  "Error",
-			"message": fmt.Sprintf("your role is %s, login as a ormawa", resp.Role),
-			"error":   "cannot access this api",
-		})
-	} else {
-		c.Locals("id", resp.ID)
-		return c.Next()
-	}
-}
-
-func ValidateTokenMahasiswa(c *fiber.Ctx) error {
-	authHeaders := c.Get("Authorization")
-	if !strings.Contains(authHeaders, "Bearer") {
-		return fiberutil.ReturnStatusUnauthorized(c)
-	}
-
-	tokens := strings.Replace(authHeaders, "Bearer ", "", -1)
-	if tokens == "Bearer" {
-		return fiberutil.ReturnStatusUnauthorized(c)
-	}
-
-	// SecretKey adalah kunci rahasia yang sama yang digunakan untuk menandatangani token
-	secretKey := []byte(SecretKey)
-
-	// Memverifikasi token
-	resp, err := verifyToken(tokens, secretKey)
-	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"status":  "Error",
-			"message": "token is not valid",
-			"error":   err.Error(),
-		})
-	} else if resp.Role != "mahasiswa" {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"status":  "Error",
-			"message": fmt.Sprintf("your role is %s, login as a mahasiswa", resp.Role),
-			"error":   "cannot access this api",
 		})
 	} else {
 		c.Locals("id", resp.ID)
@@ -162,7 +122,7 @@ func verifyToken(tokenString string, secretKey []byte) (*domain.User, error) {
 
 	usrRepo := repository.NewPostgreUser(db.GormClient.DB)
 
-	res, err := usrRepo.GetUserById(uint(id))
+	res, err := usrRepo.RetrieveUserByID(uint(id))
 	if err != nil {
 		return nil, err
 	}

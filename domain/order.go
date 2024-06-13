@@ -13,7 +13,6 @@ type Order struct {
 	Outlet     Outlet         `gorm:"foreignKey:OutletID" json:"outlet"`
 	StockID    uint           `json:"stock_id"`
 	Stock      Stock          `gorm:"foreignKey:StockID" json:"stock"`
-	DateOrder  time.Time      `json:"date_order"`
 	TotalPaid  float64        `json:"total_paid"`
 	TotalOrder float64        `json:"total_order"`
 	Status     int32          `json:"status"`

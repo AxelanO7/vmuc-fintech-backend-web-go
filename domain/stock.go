@@ -9,6 +9,7 @@ import (
 
 type Stock struct {
 	ID        uint           `gorm:"primarykey;AUTO_INCREMENT" json:"id"`
+	IdStuff   uint           `json:"id_stuff"`
 	Name      string         `json:"name"`
 	Type      string         `json:"type"`
 	Quantity  float64        `json:"quantity"`

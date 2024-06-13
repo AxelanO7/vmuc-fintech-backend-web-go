@@ -8,30 +8,31 @@ import (
 )
 
 type Out struct {
-	ID        uint           `gorm:"primarykey;AUTO_INCREMENT" json:"id"`
-	Name      string         `json:"name"`
-	Type      string         `json:"type"`
-	Quantity  float64        `json:"quantity"`
-	Unit      string         `json:"unit"`
-	Price     float64        `json:"price"`
-	CreatedAt *time.Time     `json:"created_at"`
-	UpdatedAt *time.Time     `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
+	ID          uint           `gorm:"primarykey;AUTO_INCREMENT" json:"id"`
+	OutID       uint           `json:"out_id"`
+	OrderID     uint           `json:"order_id"`
+	Order       Order          `gorm:"foreignKey:OrderID" json:"order"`
+	TotalPaided float64        `json:"total_paided" default:"0"`
+	ReturnCash  float64        `json:"return_cash" default:"0"`
+	CreatedAt   *time.Time     `json:"created_at"`
+	UpdatedAt   *time.Time     `json:"updated_at"`
+	DeletedAt   gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 }
 
 type OutRepository interface {
 	RetrieveOuts() ([]Out, error)
-	RetrieveOutById(id string) (Out, error)
+	RetrieveOutByID(id string) (Out, error)
 	CreateOut(out Out) (Out, error)
-	UpdateOutById(out Out) (Out, error)
-	RemoveOutById(id string) error
+	UpdateOutByID(out Out) (Out, error)
+	RemoveOutByID(id string) error
 }
 
 type OutUseCase interface {
 	GetOuts(ctx context.Context) ([]Out, error)
-	ShowOutById(ctx context.Context, id string) (Out, error)
-	ShowOutLastNumber(ctx context.Context) (int, error)
+	ShowOutByID(ctx context.Context, id string) (Out, error)
 	AddOut(ctx context.Context, out Out) (Out, error)
-	EditOutById(ctx context.Context, out Out) (Out, error)
-	DeleteOutById(ctx context.Context, id string) error
+	EditOutByID(ctx context.Context, out Out) (Out, error)
+	DeleteOutByID(ctx context.Context, id string) error
+
+	ShowOutLastOrderID(ctx context.Context) (int, error)
 }

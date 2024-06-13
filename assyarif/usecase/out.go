@@ -23,11 +23,11 @@ func (c *outUseCase) GetOuts(ctx context.Context) ([]domain.Out, error) {
 	return c.outRepository.RetrieveOuts()
 }
 
-func (c *outUseCase) ShowOutById(ctx context.Context, id string) (domain.Out, error) {
-	return c.outRepository.RetrieveOutById(id)
+func (c *outUseCase) ShowOutByID(ctx context.Context, id string) (domain.Out, error) {
+	return c.outRepository.RetrieveOutByID(id)
 }
 
-func (c *outUseCase) ShowOutLastNumber(ctx context.Context) (int, error) {
+func (c *outUseCase) ShowOutLastOrderID(ctx context.Context) (int, error) {
 	var res []domain.Out
 	res, err := c.outRepository.RetrieveOuts()
 	if err != nil {
@@ -36,11 +36,9 @@ func (c *outUseCase) ShowOutLastNumber(ctx context.Context) (int, error) {
 
 	lastNumber := 0
 	for _, v := range res {
-		fmt.Println(v.ID)
-		if v.ID > uint(lastNumber) {
+		if v.OutID > uint(lastNumber) {
 			lastNumber = int(v.ID)
 		}
-
 	}
 
 	fmt.Println(lastNumber)
@@ -52,10 +50,10 @@ func (c *outUseCase) AddOut(ctx context.Context, out domain.Out) (domain.Out, er
 	return c.outRepository.CreateOut(out)
 }
 
-func (c *outUseCase) EditOutById(ctx context.Context, out domain.Out) (domain.Out, error) {
-	return c.outRepository.UpdateOutById(out)
+func (c *outUseCase) EditOutByID(ctx context.Context, out domain.Out) (domain.Out, error) {
+	return c.outRepository.UpdateOutByID(out)
 }
 
-func (c *outUseCase) DeleteOutById(ctx context.Context, id string) error {
-	return c.outRepository.RemoveOutById(id)
+func (c *outUseCase) DeleteOutByID(ctx context.Context, id string) error {
+	return c.outRepository.RemoveOutByID(id)
 }

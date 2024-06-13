@@ -20,7 +20,7 @@ func NewPostgreIn(client *gorm.DB) domain.InRepository {
 func (a *posgreInRepository) RetrieveIns() ([]domain.In, error) {
 	var res []domain.In
 	err := a.DB.
-		Model(domain.In{}).
+		Model(domain.In{}).	
 		Find(&res).Error
 	if err != nil {
 		return []domain.In{}, err

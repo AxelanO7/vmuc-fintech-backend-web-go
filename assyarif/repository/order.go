@@ -27,9 +27,6 @@ func (a *posgreOrderRepository) RetrieveOrders() ([]domain.Order, error) {
 	if err != nil {
 		return []domain.Order{}, err
 	}
-	if len(res) == 0 {
-		return []domain.Order{}, nil
-	}
 	fmt.Println(res)
 	return res, nil
 }

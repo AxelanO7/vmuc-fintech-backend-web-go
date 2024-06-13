@@ -48,7 +48,7 @@ func (t *OutHandler) ShowOuts(c *fiber.Ctx) error {
 
 func (t *OutHandler) ShowOutById(c *fiber.Ctx) error {
 	id := c.Params("id")
-	res, er := t.OutUC.ShowOutById(c.Context(), id)
+	res, er := t.OutUC.ShowOutByID(c.Context(), id)
 	if er != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"status":  400,
@@ -66,7 +66,7 @@ func (t *OutHandler) ShowOutById(c *fiber.Ctx) error {
 }
 
 func (t *OutHandler) GetLastOutNumber(c *fiber.Ctx) error {
-	res, er := t.OutUC.ShowOutLastNumber(c.Context())
+	res, er := t.OutUC.ShowOutLastOrderID(c.Context())
 	if er != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"status":  400,
@@ -106,7 +106,7 @@ func (t *OutHandler) AddOut(c *fiber.Ctx) error {
 func (t *OutHandler) EditOutById(c *fiber.Ctx) error {
 	var out domain.Out
 	c.BodyParser(&out)
-	res, er := t.OutUC.EditOutById(c.Context(), out)
+	res, er := t.OutUC.EditOutByID(c.Context(), out)
 	if er != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"status":  400,
@@ -125,7 +125,7 @@ func (t *OutHandler) EditOutById(c *fiber.Ctx) error {
 
 func (t *OutHandler) DeleteOutById(c *fiber.Ctx) error {
 	id := c.Params("id")
-	er := t.OutUC.DeleteOutById(c.Context(), id)
+	er := t.OutUC.DeleteOutByID(c.Context(), id)
 	if er != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"status":  400,

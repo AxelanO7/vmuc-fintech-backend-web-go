@@ -33,10 +33,9 @@ func (c *inUseCase) ShowInLastNumber(ctx context.Context) (int, error) {
 	lastNumber := 0
 	for _, v := range res {
 		fmt.Println(v.ID)
-		if v.ID > uint(lastNumber) {
-			lastNumber = int(v.ID)
+		if v.IdStuff > uint(lastNumber) {
+			lastNumber = int(v.IdStuff)
 		}
-
 	}
 
 	fmt.Println(lastNumber)

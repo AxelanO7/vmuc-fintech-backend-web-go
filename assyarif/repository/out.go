@@ -62,7 +62,7 @@ func (a *posgreOutRepository) CreateOut(out domain.Out) (domain.Out, error) {
 	return out, nil
 }
 
-func (a *posgreOutRepository) RetrieveOutById(id string) (domain.Out, error) {
+func (a *posgreOutRepository) RetrieveOutByID(id string) (domain.Out, error) {
 	var res domain.Out
 	err := a.DB.
 		Model(domain.Out{}).
@@ -74,7 +74,7 @@ func (a *posgreOutRepository) RetrieveOutById(id string) (domain.Out, error) {
 	return res, nil
 }
 
-func (a *posgreOutRepository) UpdateOutById(out domain.Out) (domain.Out, error) {
+func (a *posgreOutRepository) UpdateOutByID(out domain.Out) (domain.Out, error) {
 	err := a.DB.
 		Model(domain.Out{}).
 		Where("id = ?", out.ID).
@@ -85,7 +85,7 @@ func (a *posgreOutRepository) UpdateOutById(out domain.Out) (domain.Out, error) 
 	return out, nil
 }
 
-func (a *posgreOutRepository) RemoveOutById(id string) error {
+func (a *posgreOutRepository) RemoveOutByID(id string) error {
 	var res domain.Out
 	err := a.DB.
 		Model(domain.Out{}).

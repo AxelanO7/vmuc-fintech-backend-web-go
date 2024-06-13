@@ -22,7 +22,6 @@ type In struct {
 type InRepository interface {
 	RetrieveIns() ([]In, error)
 	RetrieveInById(id string) (In, error)
-	RetrieveInLastNumber() (int, error)
 	CreateIn(in In) (In, error)
 	UpdateInById(in In) (In, error)
 	RemoveInById(id string) error

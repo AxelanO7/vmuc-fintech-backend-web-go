@@ -32,25 +32,6 @@ func (a *posgreInRepository) RetrieveIns() ([]domain.In, error) {
 	return res, nil
 }
 
-func (a *posgreInRepository) RetrieveInLastNumber() (int, error) {
-	var res []domain.In
-	a.DB.
-		Model(domain.In{}).
-		Find(&res)
-
-	lastNumber := 0
-	for _, v := range res {
-		fmt.Println(v.ID)
-		if v.ID > uint(lastNumber) {
-			lastNumber = int(v.ID)
-		}
-
-	}
-
-	fmt.Println(lastNumber)
-	return lastNumber, nil
-}
-
 func (a *posgreInRepository) CreateIn(in domain.In) (domain.In, error) {
 	err := a.DB.
 		Model(domain.In{}).

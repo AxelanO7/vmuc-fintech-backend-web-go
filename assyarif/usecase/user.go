@@ -14,9 +14,9 @@ type userUseCase struct {
 	contextTimeout time.Duration
 }
 
-func NewUserUseCase(usr domain.UserRepository, t time.Duration) domain.UserUseCase {
+func NewUserUseCase(user domain.UserRepository, t time.Duration) domain.UserUseCase {
 	return &userUseCase{
-		userRepository: usr,
+		userRepository: user,
 		contextTimeout: t,
 	}
 }
@@ -57,6 +57,12 @@ func (c *userUseCase) FetchUsers(ctx context.Context) ([]domain.User, error) {
 }
 
 func (c *userUseCase) CreateUser(ctx context.Context, req *domain.User) (*domain.User, error) {
+	password, err := utils.HashPassword(req.Password)
+	if err != nil {
+		return nil, fmt.Errorf("unable to hash password: %v", err)
+	}
+
+	req.Password = password
 	res, err := c.userRepository.CreateUser(req)
 	if err != nil {
 		return nil, err
@@ -78,4 +84,24 @@ func (c *userUseCase) DeleteUser(ctx context.Context, id uint) error {
 		return err
 	}
 	return nil
+}
+
+func (c *userUseCase) ShowUserLastNumber(ctx context.Context) (int, error) {
+	var res []domain.User
+	res, err := c.userRepository.RetrieveAllUser()
+	if err != nil {
+		return 0, err
+	}
+
+	lastNumber := 0
+	for _, v := range res {
+		fmt.Println(v.ID)
+		if v.ID > uint(lastNumber) {
+			lastNumber = int(v.ID)
+		}
+
+	}
+
+	fmt.Println(lastNumber)
+	return lastNumber, nil
 }

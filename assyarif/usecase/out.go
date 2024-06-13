@@ -3,6 +3,7 @@ package usecase
 import (
 	"assyarif-backend-web-go/domain"
 	"context"
+	"fmt"
 	"time"
 )
 
@@ -27,7 +28,24 @@ func (c *outUseCase) ShowOutById(ctx context.Context, id string) (domain.Out, er
 }
 
 func (c *outUseCase) ShowOutLastNumber(ctx context.Context) (int, error) {
-	return c.outRepository.RetrieveOutLastNumber()
+	var res []domain.Out
+	res, err := c.outRepository.RetrieveOuts()
+	if err != nil {
+		return 0, err
+	}
+
+	lastNumber := 0
+	for _, v := range res {
+		fmt.Println(v.ID)
+		if v.ID > uint(lastNumber) {
+			lastNumber = int(v.ID)
+		}
+
+	}
+
+	fmt.Println(lastNumber)
+	return lastNumber, nil
+
 }
 
 func (c *outUseCase) AddOut(ctx context.Context, out domain.Out) (domain.Out, error) {

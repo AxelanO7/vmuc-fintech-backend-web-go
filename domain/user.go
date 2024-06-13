@@ -18,11 +18,11 @@ type User struct {
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 }
 
-type CreateUser struct {
-	Username *string `json:"username"`
-	Role     string  `json:"role"`
-	Password string  `json:"password"`
-}
+// type CreateUser struct {
+// 	Username *string `json:"username"`
+// 	Role     string  `json:"role"`
+// 	Password string  `json:"password"`
+// }
 
 type TokenClaims struct {
 	User *User `json:"user"`
@@ -50,4 +50,5 @@ type UserUseCase interface {
 	CreateUser(ctx context.Context, req *User) (*User, error)
 	UpdateUser(ctx context.Context, req *User) (*User, error)
 	DeleteUser(ctx context.Context, id uint) error
+	ShowUserLastNumber(ctx context.Context) (int, error)
 }

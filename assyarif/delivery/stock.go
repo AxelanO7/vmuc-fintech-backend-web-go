@@ -2,38 +2,34 @@ package delivery
 
 import (
 	"assyarif-backend-web-go/domain"
-	"assyarif-backend-web-go/middleware"
 	"strconv"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/gofiber/fiber/v2"
 )
 
-type UserHandler struct {
-	UserUC domain.UserUseCase
+type StockHandler struct {
+	StockUC domain.StockUseCase
 }
 
-func NewUserHandler(c *fiber.App, das domain.UserUseCase) {
-	handler := &UserHandler{
-		UserUC: das,
+func NewStockHandler(c *fiber.App, das domain.StockUseCase) {
+	handler := &StockHandler{
+		StockUC: das,
 	}
-	api := c.Group("/user")
+	api := c.Group("/stock")
 
-	public := api.Group("/public")
-	public.Post("/login", handler.Login)
+	_ = api.Group("/public")
 
 	private := api.Group("/private")
-
-	private.Get("/account", handler.GetAllUser)
-	private.Post("/account", handler.CreateUser)
-	private.Put("/account/:id", handler.UpdateUser)
-	private.Delete("/account/:id", handler.DeleteUser)
-
-	private.Get("/profile", middleware.ValidateToken, handler.GetProfile)
+	private.Get("/stuff", handler.GetAllStock)
+	private.Get("/stuff/:id", handler.GetStockByID)
+	private.Post("/stuff", handler.CreateStock)
+	private.Put("/stuff/:id", handler.UpdateStock)
+	private.Delete("/stuff/:id", handler.DeleteStock)
 }
 
-func (t *UserHandler) GetAllUser(c *fiber.Ctx) error {
-	res, err := t.UserUC.FetchUsers(c.Context())
+func (t *StockHandler) GetAllStock(c *fiber.Ctx) error {
+	res, err := t.StockUC.FetchStocks(c.Context())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -50,46 +46,18 @@ func (t *UserHandler) GetAllUser(c *fiber.Ctx) error {
 	})
 }
 
-func (t *UserHandler) Login(c *fiber.Ctx) error {
-	req := new(domain.LoginPayload)
-	if err := c.BodyParser(req); err != nil {
+func (t *StockHandler) GetStockByID(c *fiber.Ctx) error {
+	id := c.Params("id")
+	strId, erStr := strconv.Atoi(id)
+	if erStr != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"status":  500,
 			"success": false,
-			"message": "Failed to parse body",
-			"error":   err,
+			"message": "Failed to parse id",
+			"error":   erStr.Error(),
 		})
 	}
-	valRes, er := govalidator.ValidateStruct(req)
-	if !valRes {
-		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
-			"status":  500,
-			"success": false,
-			"message": "Failed to parse body",
-			"error":   er.Error(),
-		})
-	}
-	res, token, er := t.UserUC.LoginUser(c.Context(), req)
-	if er != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  500,
-			"success": false,
-			"message": er,
-			"error":   er.Error(),
-		})
-	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"status":  200,
-		"success": true,
-		"data":    res,
-		"token":   token,
-		"message": "Successfully login",
-	})
-}
-
-func (t *UserHandler) GetProfile(c *fiber.Ctx) error {
-	id := middleware.UserID(c)
-	res, err := t.UserUC.FetchUserByID(c.Context(), uint(id))
+	res, err := t.StockUC.FetchStockByID(c.Context(), uint(strId))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -102,12 +70,12 @@ func (t *UserHandler) GetProfile(c *fiber.Ctx) error {
 		"status":  200,
 		"success": true,
 		"data":    res,
-		"message": "Successfully get profile",
+		"message": "Successfully get user by id",
 	})
 }
 
-func (t *UserHandler) CreateUser(c *fiber.Ctx) error {
-	req := new(domain.User)
+func (t *StockHandler) CreateStock(c *fiber.Ctx) error {
+	req := new(domain.Stock)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"status":  500,
@@ -125,7 +93,7 @@ func (t *UserHandler) CreateUser(c *fiber.Ctx) error {
 			"error":   er.Error(),
 		})
 	}
-	res, err := t.UserUC.CreateUser(c.Context(), req)
+	res, err := t.StockUC.CreateStock(c.Context(), req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -142,8 +110,8 @@ func (t *UserHandler) CreateUser(c *fiber.Ctx) error {
 	})
 }
 
-func (t *UserHandler) UpdateUser(c *fiber.Ctx) error {
-	req := new(domain.User)
+func (t *StockHandler) UpdateStock(c *fiber.Ctx) error {
+	req := new(domain.Stock)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"status":  500,
@@ -161,7 +129,7 @@ func (t *UserHandler) UpdateUser(c *fiber.Ctx) error {
 			"error":   er.Error(),
 		})
 	}
-	res, err := t.UserUC.UpdateUser(c.Context(), req)
+	res, err := t.StockUC.UpdateStock(c.Context(), req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -178,7 +146,7 @@ func (t *UserHandler) UpdateUser(c *fiber.Ctx) error {
 	})
 }
 
-func (t *UserHandler) DeleteUser(c *fiber.Ctx) error {
+func (t *StockHandler) DeleteStock(c *fiber.Ctx) error {
 	id := c.Params("id")
 	strId, erStr := strconv.Atoi(id)
 	if erStr != nil {
@@ -189,7 +157,7 @@ func (t *UserHandler) DeleteUser(c *fiber.Ctx) error {
 			"error":   erStr.Error(),
 		})
 	}
-	err := t.UserUC.DeleteUser(c.Context(), uint(strId))
+	err := t.StockUC.DeleteStock(c.Context(), uint(strId))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,

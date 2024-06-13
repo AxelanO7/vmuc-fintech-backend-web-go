@@ -3,6 +3,7 @@ package usecase
 import (
 	"assyarif-backend-web-go/domain"
 	"context"
+	"fmt"
 	"time"
 )
 
@@ -23,7 +24,23 @@ func (c *inUseCase) ShowIns(ctx context.Context) ([]domain.In, error) {
 }
 
 func (c *inUseCase) ShowInLastNumber(ctx context.Context) (int, error) {
-	return c.inRepository.RetrieveInLastNumber()
+	var res []domain.In
+	res, err := c.inRepository.RetrieveIns()
+	if err != nil {
+		return 0, err
+	}
+
+	lastNumber := 0
+	for _, v := range res {
+		fmt.Println(v.ID)
+		if v.ID > uint(lastNumber) {
+			lastNumber = int(v.ID)
+		}
+
+	}
+
+	fmt.Println(lastNumber)
+	return lastNumber, nil
 }
 
 func (c *inUseCase) AddIn(ctx context.Context, in domain.In) (domain.In, error) {

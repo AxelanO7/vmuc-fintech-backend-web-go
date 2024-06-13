@@ -24,12 +24,20 @@ func main() {
 	usrRepo := repository.NewPostgreUser(db.GormClient.DB)
 	inRepo := repository.NewPostgreIn(db.GormClient.DB)
 	outRepo := repository.NewPostgreOut(db.GormClient.DB)
+	employeeRepo := repository.NewPostgreEmployee(db.GormClient.DB)
+	outletRepo := repository.NewPostgreOutlet(db.GormClient.DB)
+	stockRepo := repository.NewPostgreStock(db.GormClient.DB)
+	orderRepo := repository.NewPostgreOrder(db.GormClient.DB)
 
 	timeoutContext := fiber.Config{}.ReadTimeout
 
 	userUseCase := usecase.NewUserUseCase(usrRepo, timeoutContext)
 	inUseCase := usecase.NewInUseCase(inRepo, timeoutContext)
 	outUseCase := usecase.NewOutUseCase(outRepo, timeoutContext)
+	employeeUseCase := usecase.NewEmployeeUseCase(employeeRepo, timeoutContext)
+	outletUseCase := usecase.NewOutletUseCase(outletRepo, timeoutContext)
+	stockUseCase := usecase.NewStockUseCase(stockRepo, timeoutContext)
+	orderUseCase := usecase.NewOrderUseCase(orderRepo, timeoutContext)
 
 	app := fiber.New(fiber.Config{})
 	app.Use(logger.New(logger.Config{
@@ -48,6 +56,10 @@ func main() {
 		delivery.NewUserHandler(app, userUseCase)
 		delivery.NewInHandler(app, inUseCase)
 		delivery.NewOutHandler(app, outUseCase)
+		delivery.NewEmployeeHandler(app, employeeUseCase)
+		delivery.NewOutletHandler(app, outletUseCase)
+		delivery.NewStockHandler(app, stockUseCase)
+		delivery.NewOrderHandler(app, orderUseCase)
 		log.Fatal(app.Listen(listenPort))
 		wg.Done()
 	}()

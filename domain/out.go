@@ -22,7 +22,6 @@ type Out struct {
 type OutRepository interface {
 	RetrieveOuts() ([]Out, error)
 	RetrieveOutById(id string) (Out, error)
-	RetrieveOutLastNumber() (int, error)
 	CreateOut(out Out) (Out, error)
 	UpdateOutById(out Out) (Out, error)
 	RemoveOutById(id string) error

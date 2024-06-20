@@ -22,6 +22,9 @@ func (a *posgreOutRepository) RetrieveOuts() ([]domain.Out, error) {
 	var res []domain.Out
 	err := a.DB.
 		Model(domain.Out{}).
+		Preload("Order").
+		Preload("Order.Outlet").
+		Preload("Order.Stock").
 		Find(&res).Error
 	if err != nil {
 		return []domain.Out{}, err
@@ -66,6 +69,9 @@ func (a *posgreOutRepository) RetrieveOutByID(id string) (domain.Out, error) {
 	var res domain.Out
 	err := a.DB.
 		Model(domain.Out{}).
+		Preload("Order").
+		Preload("Order.Outlet").
+		Preload("Order.Stock").
 		Where("id = ?", id).
 		First(&res).Error
 	if err != nil {

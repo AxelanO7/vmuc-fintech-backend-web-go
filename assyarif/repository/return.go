@@ -22,6 +22,8 @@ func (a *posgreRtrRepository) RetrieveAllRtr() ([]domain.Rtr, error) {
 	var res []domain.Rtr
 	err := a.DB.
 		Model(domain.Rtr{}).
+		Preload("Outlet").
+		Preload("Stock").
 		Find(&res).Error
 	if err != nil {
 		return []domain.Rtr{}, err

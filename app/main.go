@@ -29,6 +29,8 @@ func main() {
 	stockRepo := repository.NewPostgreStock(db.GormClient.DB)
 	orderRepo := repository.NewPostgreOrder(db.GormClient.DB)
 	rtrRepo := repository.NewPostgreRtr(db.GormClient.DB)
+	stockOutletRepo := repository.NewPostgreStockOutlet(db.GormClient.DB)
+	opnameRepo := repository.NewPostgreOpname(db.GormClient.DB)
 
 	timeoutContext := fiber.Config{}.ReadTimeout
 
@@ -40,6 +42,8 @@ func main() {
 	stockUseCase := usecase.NewStockUseCase(stockRepo, timeoutContext)
 	orderUseCase := usecase.NewOrderUseCase(orderRepo, timeoutContext)
 	rtrUseCase := usecase.NewRtrUseCase(rtrRepo, timeoutContext)
+	stockOutletUseCase := usecase.NewStockOutletUseCase(stockOutletRepo, timeoutContext)
+	opnameUseCase := usecase.NewOpnameUseCase(opnameRepo, timeoutContext)
 
 	app := fiber.New(fiber.Config{})
 	app.Use(logger.New(logger.Config{
@@ -63,6 +67,8 @@ func main() {
 		delivery.NewStockHandler(app, stockUseCase)
 		delivery.NewOrderHandler(app, orderUseCase)
 		delivery.NewRtrHandler(app, rtrUseCase)
+		delivery.NewStockOutletHandler(app, stockOutletUseCase)
+		delivery.NewOpnameHandler(app, opnameUseCase)
 		log.Fatal(app.Listen(listenPort))
 		wg.Done()
 	}()

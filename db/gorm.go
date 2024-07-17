@@ -2,6 +2,7 @@ package db
 
 import (
 	"assyarif-backend-web-go/domain"
+	"assyarif-backend-web-go/utils"
 	"fmt"
 	"log"
 	"os"
@@ -55,4 +56,28 @@ func RegisterTableToMigrate(db *gorm.DB) {
 	if e != nil {
 		log.Fatal(e)
 	}
+	SeedData()
+}
+
+func SeedData() {
+	SeedUser()
+}
+
+func SeedUser() {
+	usernameSupplier := "supplier"
+	usernameOutlet := "outlet"
+	passwordSupplier, _ := utils.HashPassword("supplier")
+	passwordOutlet, _ := utils.HashPassword("outlet")
+	userSupplier := domain.User{
+		Username: &usernameSupplier,
+		Password: passwordSupplier,
+		Role:     "supplier",
+	}
+	userOutlet := domain.User{
+		Username: &usernameOutlet,
+		Password: passwordOutlet,
+		Role:     "outlet",
+	}
+	GormClient.DB.Create(&userSupplier)
+	GormClient.DB.Create(&userOutlet)
 }

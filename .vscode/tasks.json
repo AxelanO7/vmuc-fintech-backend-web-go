@@ -4,7 +4,7 @@
     {
       "label": "run backend",
       "type": "shell",
-      "command": "cd app && go run main.go"
+      "command": "cd ~/Skills/programming/web/syarif/final_project/be/app && go run main.go"
     }
   ]
 }

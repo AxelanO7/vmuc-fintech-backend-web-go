@@ -57,16 +57,16 @@ func (a *posgreOrderRepository) RetrieveOrderById(id string) (domain.Order, erro
 	return res, nil
 }
 
-func (a *posgreOrderRepository) UpdateOrderById(in domain.Order) (domain.Order, error) {
+func (a *posgreOrderRepository) UpdateOrderById(order domain.Order) (domain.Order, error) {
 	err := a.DB.
 		Model(domain.Order{}).
-		Where("id = ?", in.ID).
-		Updates(&in).Error
+		Where("id = ?", order.ID).
+		Updates(&order).Error
 	if err != nil {
 		return domain.Order{}, err
 	}
-	fmt.Println(in)
-	return in, nil
+	fmt.Println(order)
+	return order, nil
 }
 
 func (a *posgreOrderRepository) RemoveOrderById(id string) error {
@@ -96,4 +96,15 @@ func (a *posgreOrderRepository) RetrieveOrderByOutletId(id string) ([]domain.Ord
 	}
 	fmt.Println(res)
 	return res, nil
+}
+
+func (a *posgreOrderRepository) CreateOrders(order []domain.Order) ([]domain.Order, error) {
+	err := a.DB.
+		Model(domain.Order{}).
+		Create(&order).Error
+	if err != nil {
+		return []domain.Order{}, err
+	}
+	fmt.Println(order)
+	return order, nil
 }

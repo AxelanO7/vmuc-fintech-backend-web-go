@@ -23,6 +23,8 @@ func NewOrderHandler(c *fiber.App, das domain.OrderUseCase) {
 	stuff.Put("/:id", handler.EditOrderById)
 	stuff.Delete("/:id", handler.DeleteOrderById)
 
+	stuff.Post("/multiple", handler.AddOrders)
+
 	private := api.Group("/private")
 	private.Get("/outlet/:id", handler.ShowOrderByOutletId)
 }
@@ -156,5 +158,33 @@ func (t *OrderHandler) ShowOrderByOutletId(c *fiber.Ctx) error {
 		"success": true,
 		"data":    res,
 		"message": "Success get data",
+	})
+}
+
+func (t *OrderHandler) AddOrders(c *fiber.Ctx) error {
+	var in []domain.Order
+	if err := c.BodyParser(&in); err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"status":  400,
+			"success": false,
+			"data":    nil,
+			"message": err.Error(),
+		})
+	}
+
+	res, er := t.OrderUC.CreateOrders(c.Context(), in)
+	if er != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"status":  400,
+			"success": false,
+			"data":    nil,
+			"message": er.Error(),
+		})
+	}
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"status":  201,
+		"success": true,
+		"data":    res,
+		"message": "Success create data",
 	})
 }

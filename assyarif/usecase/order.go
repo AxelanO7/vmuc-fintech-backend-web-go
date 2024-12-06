@@ -41,3 +41,7 @@ func (c *orderUseCase) DeleteOrderById(ctx context.Context, id string) error {
 func (c *orderUseCase) ShowOrderByOutletId(ctx context.Context, id string) ([]domain.Order, error) {
 	return c.orderRepository.RetrieveOrderByOutletId(id)
 }
+
+func (c *orderUseCase) CreateOrders(ctx context.Context, orders []domain.Order) ([]domain.Order, error) {
+	return c.orderRepository.CreateOrders(orders)
+}

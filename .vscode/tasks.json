@@ -4,7 +4,9 @@
     {
       "label": "Run Backend",
       "type": "shell",
-      "command": "cd ~/Skills/programming/web/syarif/final_project/be/app && go run main.go"
+      "command": "cd ~/Skills/programming/web/syarif/final_project/be/app && go run main.go",
+      "problemMatcher": ["$vite"],
+      "isBackground": true
     }
   ]
 }

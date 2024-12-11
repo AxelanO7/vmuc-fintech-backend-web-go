@@ -57,3 +57,7 @@ func (c *outUseCase) EditOutByID(ctx context.Context, out domain.Out) (domain.Ou
 func (c *outUseCase) DeleteOutByID(ctx context.Context, id string) error {
 	return c.outRepository.RemoveOutByID(id)
 }
+
+func (c *outUseCase) AddOuts(ctx context.Context, outs []domain.Out) ([]domain.Out, error) {
+	return c.outRepository.CreateOuts(outs)
+}

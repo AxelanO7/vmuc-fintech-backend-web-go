@@ -25,6 +25,7 @@ type OutRepository interface {
 	CreateOut(out Out) (Out, error)
 	UpdateOutByID(out Out) (Out, error)
 	RemoveOutByID(id string) error
+	CreateOuts(outs []Out) ([]Out, error)
 }
 
 type OutUseCase interface {
@@ -33,6 +34,6 @@ type OutUseCase interface {
 	AddOut(ctx context.Context, out Out) (Out, error)
 	EditOutByID(ctx context.Context, out Out) (Out, error)
 	DeleteOutByID(ctx context.Context, id string) error
-
 	ShowOutLastOrderID(ctx context.Context) (int, error)
+	AddOuts(ctx context.Context, outs []Out) ([]Out, error)
 }

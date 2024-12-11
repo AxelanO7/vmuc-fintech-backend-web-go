@@ -102,3 +102,13 @@ func (a *posgreOutRepository) RemoveOutByID(id string) error {
 	}
 	return nil
 }
+
+func (a *posgreOutRepository) CreateOuts(outs []domain.Out) ([]domain.Out, error) {
+	err := a.DB.
+		Model(domain.Out{}).
+		Create(&outs).Error
+	if err != nil {
+		return []domain.Out{}, err
+	}
+	return outs, nil
+}

@@ -22,6 +22,8 @@ func NewOutHandler(c *fiber.App, das domain.OutUseCase) {
 	out.Put("/:id", handler.EditOutById)
 	out.Delete("/:id", handler.DeleteOutById)
 
+	out.Post("/multiple", handler.AddOuts)
+
 	last := api.Group("/last")
 	outLast := last.Group("/out")
 	outLast.Get("/", handler.GetLastOutNumber)
@@ -139,5 +141,33 @@ func (t *OutHandler) DeleteOutById(c *fiber.Ctx) error {
 		"success": true,
 		"data":    nil,
 		"message": "Success delete data",
+	})
+}
+
+func (t *OutHandler) AddOuts(c *fiber.Ctx) error {
+	var out []domain.Out
+	if err := c.BodyParser(&out); err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"status":  400,
+			"success": false,
+			"data":    nil,
+			"message": err.Error(),
+		})
+	}
+
+	res, er := t.OutUC.AddOuts(c.Context(), out)
+	if er != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"status":  400,
+			"success": false,
+			"data":    nil,
+			"message": er.Error(),
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  200,
+		"success": true,
+		"data":    res,
+		"message": "Success get data",
 	})
 }

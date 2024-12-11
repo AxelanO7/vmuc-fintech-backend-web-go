@@ -80,6 +80,33 @@ func (a *posgreStockOutletRepository) DeleteStockOutlet(id uint) error {
 	return nil
 }
 
+func (a *posgreStockOutletRepository) UpdateStockOutletsMultiple(user []domain.StockOutlet) ([]domain.StockOutlet, error) {
+	for _, u := range user {
+		err := a.DB.
+			Model(domain.StockOutlet{}).
+			Where("id = ?", u.ID).
+			Updates(u).Error
+		if err != nil {
+			return []domain.StockOutlet{}, err
+		}
+	}
+	fmt.Println(user)
+	return user, nil
+}
+
+func (a *posgreStockOutletRepository) CreateStockOutletsMultiple(user []domain.StockOutlet) ([]domain.StockOutlet, error) {
+	for _, u := range user {
+		err := a.DB.
+			Model(domain.StockOutlet{}).
+			Create(u).Error
+		if err != nil {
+			return []domain.StockOutlet{}, err
+		}
+	}
+	fmt.Println(user)
+	return user, nil
+}
+
 // func (a *posgreStockOutletRepository) IncreaseDashboard(user *domain.StockOutlet) (*domain.StockOutlet, error) {
 // 	var res domain.StockOutlet
 // 	err := a.DB.

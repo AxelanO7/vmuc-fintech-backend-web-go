@@ -22,12 +22,18 @@ type StockOutlet struct {
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 }
 
+type StockOutlets struct {
+	StockOutlets []StockOutlet `json:"orders"`
+}
+
 type StockOutletRepository interface {
 	RetrieveAllStockOutlet() ([]StockOutlet, error)
 	RetrieveStockOutletByID(id uint) (*StockOutlet, error)
 	CreateStockOutlet(StockOutlet *StockOutlet) (*StockOutlet, error)
 	UpdateStockOutlet(StockOutlet *StockOutlet) (*StockOutlet, error)
 	DeleteStockOutlet(id uint) error
+	UpdateStockOutletsMultiple(StockOutlets []StockOutlet) ([]StockOutlet, error)
+	CreateStockOutletsMultiple(StockOutlets []StockOutlet) ([]StockOutlet, error)
 }
 
 type StockOutletUseCase interface {
@@ -38,4 +44,5 @@ type StockOutletUseCase interface {
 	DeleteStockOutlet(ctx context.Context, id uint) error
 	IncreaseDashboard(ctx context.Context, req *StockOutlet) (*StockOutlet, error)
 	DecreaseDashboard(ctx context.Context, req *StockOutlet) (*StockOutlet, error)
+	IncreaseDashboardMultiple(ctx context.Context, req []StockOutlet) ([]StockOutlet, error)
 }

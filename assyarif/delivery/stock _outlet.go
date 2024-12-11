@@ -29,6 +29,8 @@ func NewStockOutletHandler(c *fiber.App, das domain.StockOutletUseCase) {
 
 	private.Post("/increase-dashboard", handler.IncreaseDashboard)
 	private.Post("/decrease-dashboard", handler.DecreaseDashboard)
+
+	private.Post("/increase-dashboard/multiple", handler.IncreaseDashboardMultiple)
 }
 
 func (t *StockOutletHandler) GetAllStockOutlet(c *fiber.Ctx) error {
@@ -232,6 +234,42 @@ func (t *StockOutletHandler) DecreaseDashboard(c *fiber.Ctx) error {
 		})
 	}
 	res, err := t.StockOutletUC.DecreaseDashboard(c.Context(), req)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": err,
+			"error":   err.Error(),
+		})
+	}
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"status":  201,
+		"success": true,
+		"data":    res,
+		"message": "Successfully create user",
+	})
+}
+
+func (t *StockOutletHandler) IncreaseDashboardMultiple(c *fiber.Ctx) error {
+	req := new(domain.StockOutlets)
+	if err := c.BodyParser(req); err != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": "Failed to parse body",
+			"error":   err,
+		})
+	}
+	valRes, er := govalidator.ValidateStruct(req)
+	if !valRes {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": "Failed to parse body",
+			"error":   er.Error(),
+		})
+	}
+	res, err := t.StockOutletUC.IncreaseDashboardMultiple(c.Context(), req.StockOutlets)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,

@@ -121,3 +121,40 @@ func (c *stockOutletUseCase) DecreaseDashboard(ctx context.Context, req *domain.
 	}
 	return nil, nil
 }
+
+func (c *stockOutletUseCase) IncreaseDashboardMultiple(ctx context.Context, req []domain.StockOutlet) ([]domain.StockOutlet, error) {
+	finalStock := []domain.StockOutlet{}
+	for _, stock := range req {
+		stocks, errStocks := c.stockOutletRepository.RetrieveAllStockOutlet()
+		if errStocks != nil {
+			return nil, errStocks
+		}
+		for _, st := range stocks {
+			if st.IdStuff == stock.IdStuff {
+				stock = domain.StockOutlet{
+					ID:        st.ID,
+					IdStuff:   st.IdStuff,
+					Name:      st.Name,
+					Type:      st.Type,
+					Quantity:  st.Quantity + stock.Quantity,
+					Unit:      st.Unit,
+					Price:     st.Price,
+					IdOutlet:  st.IdOutlet,
+					CreatedAt: st.CreatedAt,
+					UpdatedAt: st.UpdatedAt,
+					DeletedAt: st.DeletedAt,
+				}
+				res, err := c.stockOutletRepository.UpdateStockOutlet(&stock)
+				if err != nil {
+					return nil, err
+				}
+				_, errCreated := c.stockOutletRepository.CreateStockOutlet(&stock)
+				if errCreated != nil {
+					return nil, errCreated
+				}
+				finalStock = append(finalStock, *res)
+			}
+		}
+	}
+	return finalStock, nil
+}

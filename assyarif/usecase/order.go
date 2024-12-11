@@ -42,6 +42,6 @@ func (c *orderUseCase) ShowOrderByOutletId(ctx context.Context, id string) ([]do
 	return c.orderRepository.RetrieveOrderByOutletId(id)
 }
 
-func (c *orderUseCase) CreateOrders(ctx context.Context, orders []domain.Order) ([]domain.Order, error) {
+func (c *orderUseCase) AddOrders(ctx context.Context, orders []domain.Order) ([]domain.Order, error) {
 	return c.orderRepository.CreateOrders(orders)
 }

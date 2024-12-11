@@ -38,5 +38,5 @@ type OrderUseCase interface {
 	EditOrderById(ctx context.Context, in Order) (Order, error)
 	DeleteOrderById(ctx context.Context, id string) error
 	ShowOrderByOutletId(ctx context.Context, id string) ([]Order, error)
-	CreateOrders(ctx context.Context, in []Order) ([]Order, error)
+	AddOrders(ctx context.Context, in []Order) ([]Order, error)
 }

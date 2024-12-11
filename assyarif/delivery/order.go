@@ -172,7 +172,7 @@ func (t *OrderHandler) AddOrders(c *fiber.Ctx) error {
 		})
 	}
 
-	res, er := t.OrderUC.CreateOrders(c.Context(), in)
+	res, er := t.OrderUC.AddOrders(c.Context(), in)
 	if er != nil {
 		return c.Status(400).JSON(fiber.Map{
 			"status":  400,

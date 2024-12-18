@@ -22,6 +22,7 @@ func (a *posgreStockOutletRepository) RetrieveAllStockOutlet() ([]domain.StockOu
 	var res []domain.StockOutlet
 	err := a.DB.
 		Model(domain.StockOutlet{}).
+		Preload("Out").
 		Preload("Outlet").
 		Find(&res).Error
 	if err != nil {

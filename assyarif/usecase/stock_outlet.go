@@ -68,6 +68,8 @@ func (c *stockOutletUseCase) IncreaseDashboard(ctx context.Context, req *domain.
 			req = &domain.StockOutlet{
 				ID:        stock.ID,
 				IdStuff:   stock.IdStuff,
+				IdOut:     stock.IdOut,
+				Out:       stock.Out,
 				Name:      stock.Name,
 				Type:      stock.Type,
 				Quantity:  stock.Quantity + req.Quantity,
@@ -102,6 +104,8 @@ func (c *stockOutletUseCase) DecreaseDashboard(ctx context.Context, req *domain.
 			req = &domain.StockOutlet{
 				ID:        stock.ID,
 				IdStuff:   stock.IdStuff,
+				IdOut:     stock.IdOut,
+				Out:       stock.Out,
 				Name:      stock.Name,
 				Type:      stock.Type,
 				Quantity:  stock.Quantity - req.Quantity,
@@ -134,6 +138,8 @@ func (c *stockOutletUseCase) IncreaseDashboardMultiple(ctx context.Context, req 
 				stock = domain.StockOutlet{
 					ID:        st.ID,
 					IdStuff:   st.IdStuff,
+					IdOut:     stock.IdOut,
+					Out:       st.Out,
 					Name:      st.Name,
 					Type:      st.Type,
 					Quantity:  st.Quantity + stock.Quantity,

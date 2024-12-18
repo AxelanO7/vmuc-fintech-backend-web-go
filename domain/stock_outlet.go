@@ -10,6 +10,8 @@ import (
 type StockOutlet struct {
 	ID        uint           `gorm:"primarykey;AUTO_INCREMENT" json:"id"`
 	IdStuff   uint           `json:"id_stuff"`
+	IdOut     uint           `json:"id_out"`
+	Out       *Out           `gorm:"foreignKey:IdOut;references:ID" json:"out"`
 	IdOutlet  uint           `json:"id_outlet"`
 	Outlet    *Outlet        `gorm:"foreignKey:IdOutlet;references:ID" json:"outlet"`
 	Name      string         `json:"name"`

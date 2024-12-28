@@ -85,3 +85,25 @@ func (c *stockUseCase) DecreaseStocks(ctx context.Context, req []domain.Stock) (
 	fmt.Println("afterStocks", afterStocks)
 	return resultStocks, nil
 }
+
+func (c *stockUseCase) UpdateDescription(ctx context.Context, req []domain.UpdateDescriptionRequest) ([]domain.Stock, error) {
+	stocks, err := c.stockRepository.RetrieveAllStock()
+	resultStocks := []domain.Stock{}
+	if err != nil {
+		return nil, err
+	}
+	for _, stock := range stocks {
+		for _, reqStock := range req {
+			if stock.IdStuff == reqStock.ID {
+				fmt.Println("match stock", stock, reqStock)
+				stock.Description = &reqStock.Description
+				res, err := c.stockRepository.UpdateDescription(&reqStock)
+				if err != nil {
+					return nil, err
+				}
+				resultStocks = append(resultStocks, *res)
+			}
+		}
+	}
+	return resultStocks, nil
+}

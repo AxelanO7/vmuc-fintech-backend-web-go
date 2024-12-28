@@ -57,16 +57,16 @@ func (a *posgreStockRepository) CreateStock(user *domain.Stock) (*domain.Stock, 
 	return user, nil
 }
 
-func (a *posgreStockRepository) UpdateStock(user *domain.Stock) (*domain.Stock, error) {
+func (a *posgreStockRepository) UpdateStock(stock *domain.Stock) (*domain.Stock, error) {
 	err := a.DB.
 		Model(domain.Stock{}).
-		Where("id = ?", user.ID).
-		Updates(user).Error
+		Where("id = ?", stock.ID).
+		Updates(stock).Error
 	if err != nil {
 		return &domain.Stock{}, err
 	}
-	fmt.Println(user)
-	return user, nil
+	fmt.Println("updated stock", stock)
+	return stock, nil
 }
 
 func (a *posgreStockRepository) DeleteStock(id uint) error {
@@ -76,6 +76,19 @@ func (a *posgreStockRepository) DeleteStock(id uint) error {
 		Delete(&domain.Stock{}).Error
 	if err != nil {
 		return err
+		
 	}
 	return nil
+}
+
+func (a *posgreStockRepository) UpdateStockByStuffID(stock *domain.Stock) (*domain.Stock, error) {
+	err := a.DB.
+		Model(domain.Stock{}).
+		Where("id_stuff = ?", stock.IdStuff).
+		Update("quantity", stock.Quantity).Error
+	if err != nil {
+		return &domain.Stock{}, err
+	}
+	fmt.Println("updated stock", stock)
+	return stock, nil
 }

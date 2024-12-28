@@ -25,6 +25,7 @@ type StockRepository interface {
 	RetrieveStockByID(id uint) (*Stock, error)
 	CreateStock(Stock *Stock) (*Stock, error)
 	UpdateStock(Stock *Stock) (*Stock, error)
+	UpdateStockByStuffID(Stok *Stock) (*Stock, error)
 	DeleteStock(id uint) error
 }
 
@@ -34,4 +35,5 @@ type StockUseCase interface {
 	CreateStock(ctx context.Context, req *Stock) (*Stock, error)
 	UpdateStock(ctx context.Context, req *Stock) (*Stock, error)
 	DeleteStock(ctx context.Context, id uint) error
+	DecreaseStocks(ctx context.Context, req []Stock) ([]Stock, error)
 }

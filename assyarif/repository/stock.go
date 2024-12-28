@@ -76,7 +76,7 @@ func (a *posgreStockRepository) DeleteStock(id uint) error {
 		Delete(&domain.Stock{}).Error
 	if err != nil {
 		return err
-		
+
 	}
 	return nil
 }
@@ -91,4 +91,17 @@ func (a *posgreStockRepository) UpdateStockByStuffID(stock *domain.Stock) (*doma
 	}
 	fmt.Println("updated stock", stock)
 	return stock, nil
+}
+
+func (a *posgreStockRepository) UpdateDescription(req *domain.UpdateDescriptionRequest) (*domain.Stock, error) {
+	fmt.Println("req", req)
+	err := a.DB.
+		Model(domain.Stock{}).
+		Where("id_stuff = ?", req.ID).
+		Update("description", req.Description).Error
+	if err != nil {
+		return &domain.Stock{}, err
+	}
+	fmt.Println("updated stock", req)
+	return &domain.Stock{}, nil
 }

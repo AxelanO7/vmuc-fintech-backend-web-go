@@ -29,6 +29,7 @@ func NewStockHandler(c *fiber.App, das domain.StockUseCase) {
 	private.Delete("/stuff/:id", handler.DeleteStock)
 
 	private.Put("/stuff/decrease-dashboard/multiple", handler.DecreaseStocks)
+	private.Put("/stuff/update-description/multiple", handler.UpdateDescription)
 }
 
 func (t *StockHandler) GetAllStock(c *fiber.Ctx) error {
@@ -201,5 +202,33 @@ func (t *StockHandler) DecreaseStocks(c *fiber.Ctx) error {
 		"success": true,
 		"data":    res,
 		"message": "Successfully decrease stocks",
+	})
+}
+
+func (t *StockHandler) UpdateDescription(c *fiber.Ctx) error {
+	req := new([]domain.UpdateDescriptionRequest)
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": "Failed to parse body",
+			"error":   err,
+		})
+	}
+	res, err := t.StockUC.UpdateDescription(c.Context(), *req)
+	fmt.Println("res", res)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": err,
+			"error":   err.Error(),
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  200,
+		"success": true,
+		"data":    res,
+		"message": "Successfully update description",
 	})
 }

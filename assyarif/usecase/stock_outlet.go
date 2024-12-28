@@ -127,22 +127,24 @@ func (c *stockOutletUseCase) DecreaseDashboard(ctx context.Context, req *domain.
 }
 
 func (c *stockOutletUseCase) IncreaseDashboardMultiple(ctx context.Context, req []domain.StockOutlet) ([]domain.StockOutlet, error) {
-	finalStock := []domain.StockOutlet{}
-	for _, stock := range req {
+	stockOutlets := []domain.StockOutlet{}
+
+	for _, stockReq := range req {
 		stocks, errStocks := c.stockOutletRepository.RetrieveAllStockOutlet()
 		if errStocks != nil {
 			return nil, errStocks
 		}
 		for _, st := range stocks {
-			if st.IdStuff == stock.IdStuff {
-				stock = domain.StockOutlet{
+			if st.IdStuff == stockReq.IdStuff {
+				increaseStock := st.Quantity + stockReq.Quantity
+				stockReq = domain.StockOutlet{
 					ID:        st.ID,
 					IdStuff:   st.IdStuff,
-					IdOut:     stock.IdOut,
+					IdOut:     stockReq.IdOut,
 					Out:       st.Out,
 					Name:      st.Name,
 					Type:      st.Type,
-					Quantity:  st.Quantity + stock.Quantity,
+					Quantity:  increaseStock,
 					Unit:      st.Unit,
 					Price:     st.Price,
 					IdOutlet:  st.IdOutlet,
@@ -150,17 +152,17 @@ func (c *stockOutletUseCase) IncreaseDashboardMultiple(ctx context.Context, req 
 					UpdatedAt: st.UpdatedAt,
 					DeletedAt: st.DeletedAt,
 				}
-				res, err := c.stockOutletRepository.UpdateStockOutlet(&stock)
+				res, err := c.stockOutletRepository.UpdateStockOutlet(&stockReq)
 				if err != nil {
 					return nil, err
 				}
-				_, errCreated := c.stockOutletRepository.CreateStockOutlet(&stock)
+				_, errCreated := c.stockOutletRepository.CreateStockOutlet(&stockReq)
 				if errCreated != nil {
 					return nil, errCreated
 				}
-				finalStock = append(finalStock, *res)
+				stockOutlets = append(stockOutlets, *res)
 			}
 		}
 	}
-	return finalStock, nil
+	return stockOutlets, nil
 }

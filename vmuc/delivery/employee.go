@@ -26,8 +26,6 @@ func NewEmployeeHandler(c *fiber.App, das domain.EmployeeUseCase) {
 	private.Post("/account", handler.CreateEmployee)
 	private.Put("/account/:id", handler.UpdateEmployee)
 	private.Delete("/account/:id", handler.DeleteEmployee)
-
-	private.Get("/last", handler.ShowEmployeeLastNumber)
 }
 
 func (t *EmployeeHandler) GetAllEmployee(c *fiber.Ctx) error {

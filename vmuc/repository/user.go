@@ -26,7 +26,7 @@ func (a *posgreUserRepository) RetrieveAllUser() ([]domain.User, error) {
 	if err != nil {
 		return []domain.User{}, err
 	}
-	fmt.Println(res)
+	fmt.Println(" retrieve all user ", res)
 	return res, nil
 }
 
@@ -42,7 +42,7 @@ func (a *posgreUserRepository) RetrieveByUsername(username string) (*domain.User
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return &domain.User{}, fmt.Errorf("record not found")
 	}
-	fmt.Println(res)
+	fmt.Println("retrieve user by username ", res)
 	return &res, nil
 }
 
@@ -58,7 +58,7 @@ func (a *posgreUserRepository) RetrieveUserByID(id uint) (*domain.User, error) {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return &domain.User{}, fmt.Errorf("record not found")
 	}
-	fmt.Println(res)
+	fmt.Println("retrieve user by id ", res)
 	return &res, nil
 }
 
@@ -69,7 +69,7 @@ func (a *posgreUserRepository) CreateUser(user *domain.User) (*domain.User, erro
 	if err != nil {
 		return &domain.User{}, err
 	}
-	fmt.Println(user)
+	fmt.Println("create user ", user)
 	return user, nil
 }
 
@@ -81,7 +81,7 @@ func (a *posgreUserRepository) UpdateUser(user *domain.User) (*domain.User, erro
 	if err != nil {
 		return &domain.User{}, err
 	}
-	fmt.Println(user)
+	fmt.Println("update user ", user)
 	return user, nil
 }
 
@@ -93,5 +93,6 @@ func (a *posgreUserRepository) DeleteUser(id uint) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println("delete user ", id)
 	return nil
 }

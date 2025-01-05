@@ -22,12 +22,11 @@ func (a *posgreRefRepository) RetrieveRefs() ([]domain.Ref, error) {
 	var res []domain.Ref
 	err := a.DB.
 		Model(domain.Ref{}).
-		Preload("User").
 		Find(&res).Error
 	if err != nil {
 		return []domain.Ref{}, err
 	}
-	fmt.Println(res)
+	fmt.Println("retrieve refs ", res)
 	return res, nil
 }
 
@@ -36,7 +35,6 @@ func (a *posgreRefRepository) RetrieveRefByID(id uint) (*domain.Ref, error) {
 	err := a.DB.
 		Model(domain.Ref{}).
 		Where("id = ?", id).
-		Preload("User").
 		Take(&res).Error
 	if err != nil {
 		return &domain.Ref{}, err
@@ -44,31 +42,31 @@ func (a *posgreRefRepository) RetrieveRefByID(id uint) (*domain.Ref, error) {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return &domain.Ref{}, fmt.Errorf("record not found")
 	}
-	fmt.Println(res)
+	fmt.Println("retrieve ref by id ", res)
 	return &res, nil
 }
 
-func (a *posgreRefRepository) CreateRef(user *domain.Ref) (*domain.Ref, error) {
+func (a *posgreRefRepository) CreateRef(ref *domain.Ref) (*domain.Ref, error) {
 	err := a.DB.
 		Model(domain.Ref{}).
-		Create(user).Error
+		Create(ref).Error
 	if err != nil {
 		return &domain.Ref{}, err
 	}
-	fmt.Println(user)
-	return user, nil
+	fmt.Println("create ref ", ref)
+	return ref, nil
 }
 
-func (a *posgreRefRepository) UpdateRef(user *domain.Ref) (*domain.Ref, error) {
+func (a *posgreRefRepository) UpdateRef(ref *domain.Ref) (*domain.Ref, error) {
 	err := a.DB.
 		Model(domain.Ref{}).
-		Where("id = ?", user.ID).
-		Updates(user).Error
+		Where("id = ?", ref.ID).
+		Updates(ref).Error
 	if err != nil {
 		return &domain.Ref{}, err
 	}
-	fmt.Println(user)
-	return user, nil
+	fmt.Println("update ref ", ref)
+	return ref, nil
 }
 
 func (a *posgreRefRepository) DeleteRef(id uint) error {
@@ -79,5 +77,6 @@ func (a *posgreRefRepository) DeleteRef(id uint) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println("delete ref ", id)
 	return nil
 }

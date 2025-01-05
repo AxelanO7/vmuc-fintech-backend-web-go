@@ -27,7 +27,7 @@ func (a *posgreEmployeeRepository) RetrieveAllEmployee() ([]domain.Employee, err
 	if err != nil {
 		return []domain.Employee{}, err
 	}
-	fmt.Println(res)
+	fmt.Println("retrieve all employee ", res)
 	return res, nil
 }
 
@@ -44,31 +44,31 @@ func (a *posgreEmployeeRepository) RetrieveEmployeeByID(id uint) (*domain.Employ
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return &domain.Employee{}, fmt.Errorf("record not found")
 	}
-	fmt.Println(res)
+	fmt.Println("retrieve employee by id ", res)
 	return &res, nil
 }
 
-func (a *posgreEmployeeRepository) CreateEmployee(user *domain.Employee) (*domain.Employee, error) {
+func (a *posgreEmployeeRepository) CreateEmployee(employee *domain.Employee) (*domain.Employee, error) {
 	err := a.DB.
 		Model(domain.Employee{}).
-		Create(user).Error
+		Create(employee).Error
 	if err != nil {
 		return &domain.Employee{}, err
 	}
-	fmt.Println(user)
-	return user, nil
+	fmt.Println("create employee ", employee)
+	return employee, nil
 }
 
-func (a *posgreEmployeeRepository) UpdateEmployee(user *domain.Employee) (*domain.Employee, error) {
+func (a *posgreEmployeeRepository) UpdateEmployee(employee *domain.Employee) (*domain.Employee, error) {
 	err := a.DB.
 		Model(domain.Employee{}).
-		Where("id = ?", user.ID).
-		Updates(user).Error
+		Where("id = ?", employee.ID).
+		Updates(employee).Error
 	if err != nil {
 		return &domain.Employee{}, err
 	}
-	fmt.Println(user)
-	return user, nil
+	fmt.Println("update employee ", employee)
+	return employee, nil
 }
 
 func (a *posgreEmployeeRepository) DeleteEmployee(id uint) error {
@@ -79,5 +79,6 @@ func (a *posgreEmployeeRepository) DeleteEmployee(id uint) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println("delete employee ", id)
 	return nil
 }

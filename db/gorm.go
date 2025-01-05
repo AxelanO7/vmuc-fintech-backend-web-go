@@ -61,6 +61,7 @@ func SeedUser() {
 	userSupplier := domain.User{
 		Username: &usernameSupplier,
 		Password: passwordSupplier,
+		Level:    1,
 	}
 
 	GormClient.DB.Create(&userSupplier)

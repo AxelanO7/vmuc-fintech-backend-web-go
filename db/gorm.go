@@ -1,11 +1,11 @@
 package db
 
 import (
-	"assyarif-backend-web-go/domain"
-	"assyarif-backend-web-go/utils"
 	"fmt"
 	"log"
 	"os"
+	"vmuc-fintech-backend-web-go/domain"
+	"vmuc-fintech-backend-web-go/utils"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -43,15 +43,7 @@ func NewMySQLClient() {
 func RegisterTableToMigrate(db *gorm.DB) {
 	e := db.AutoMigrate(
 		&domain.User{},
-		&domain.In{},
-		&domain.Out{},
 		&domain.Employee{},
-		&domain.Outlet{},
-		&domain.Stock{},
-		&domain.Order{},
-		&domain.Rtr{},
-		&domain.StockOutlet{},
-		&domain.Opname{},
 	)
 	if e != nil {
 		log.Fatal(e)
@@ -64,20 +56,12 @@ func SeedData() {
 }
 
 func SeedUser() {
-	usernameSupplier := "supplier"
-	usernameOutlet := "outlet"
-	passwordSupplier, _ := utils.HashPassword("supplier")
-	passwordOutlet, _ := utils.HashPassword("outlet")
+	usernameSupplier := "user1"
+	passwordSupplier, _ := utils.HashPassword("user1")
 	userSupplier := domain.User{
 		Username: &usernameSupplier,
 		Password: passwordSupplier,
-		Role:     "supplier",
 	}
-	userOutlet := domain.User{
-		Username: &usernameOutlet,
-		Password: passwordOutlet,
-		Role:     "outlet",
-	}
+
 	GormClient.DB.Create(&userSupplier)
-	GormClient.DB.Create(&userOutlet)
 }

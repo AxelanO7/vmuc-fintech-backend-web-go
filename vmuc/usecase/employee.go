@@ -1,10 +1,10 @@
 package usecase
 
 import (
-	"assyarif-backend-web-go/domain"
 	"context"
 	"fmt"
 	"time"
+	"vmuc-fintech-backend-web-go/domain"
 )
 
 type employeeUseCase struct {

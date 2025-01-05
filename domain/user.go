@@ -11,18 +11,12 @@ import (
 type User struct {
 	ID        uint           `gorm:"primarykey;AUTO_INCREMENT" json:"id"`
 	Username  *string        `gorm:"null" json:"username"`
-	Role      string         `gorm:"not null" json:"role"`
+	Level     int            `gorm:"not null" json:"level"`
 	Password  string         `gorm:"not null" json:"password"`
 	CreatedAt *time.Time     `json:"created_at"`
 	UpdatedAt *time.Time     `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 }
-
-// type CreateUser struct {
-// 	Username *string `json:"username"`
-// 	Role     string  `json:"role"`
-// 	Password string  `json:"password"`
-// }
 
 type TokenClaims struct {
 	User *User `json:"user"`
@@ -45,10 +39,9 @@ type UserRepository interface {
 
 type UserUseCase interface {
 	FetchUsers(ctx context.Context) ([]User, error)
-	LoginUser(ctx context.Context, req *LoginPayload) (*User, string, error)
 	FetchUserByID(ctx context.Context, id uint) (*User, error)
-	CreateUser(ctx context.Context, req *User) (*User, error)
-	UpdateUser(ctx context.Context, req *User) (*User, error)
+	AddUser(ctx context.Context, req *User) (*User, error)
+	EditUser(ctx context.Context, req *User) (*User, error)
 	DeleteUser(ctx context.Context, id uint) error
-	ShowUserLastNumber(ctx context.Context) (int, error)
+	LoginUser(ctx context.Context, req *LoginPayload) (*User, string, error)
 }

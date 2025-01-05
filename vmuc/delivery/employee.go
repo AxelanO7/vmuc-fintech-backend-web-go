@@ -1,8 +1,8 @@
 package delivery
 
 import (
-	"assyarif-backend-web-go/domain"
 	"strconv"
+	"vmuc-fintech-backend-web-go/domain"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/gofiber/fiber/v2"

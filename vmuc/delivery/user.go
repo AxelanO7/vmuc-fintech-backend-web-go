@@ -1,35 +1,39 @@
 package delivery
 
 import (
-	"assyarif-backend-web-go/domain"
 	"strconv"
+	"vmuc-fintech-backend-web-go/domain"
+	"vmuc-fintech-backend-web-go/middleware"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/gofiber/fiber/v2"
 )
 
-type RtrHandler struct {
-	RtrUC domain.RtrUseCase
+type UserHandler struct {
+	UserUC domain.UserUseCase
 }
 
-func NewRtrHandler(c *fiber.App, das domain.RtrUseCase) {
-	handler := &RtrHandler{
-		RtrUC: das,
+func NewUserHandler(c *fiber.App, das domain.UserUseCase) {
+	handler := &UserHandler{
+		UserUC: das,
 	}
-	api := c.Group("/return")
+	api := c.Group("/user")
 
-	_ = api.Group("/public")
+	public := api.Group("/public")
+	public.Post("/login", handler.Login)
 
 	private := api.Group("/private")
-	private.Get("/stuff", handler.GetAllRtr)
-	private.Get("/stuff/:id", handler.GetRtrByID)
-	private.Post("/stuff", handler.CreateRtr)
-	private.Put("/stuff/:id", handler.UpdateRtr)
-	private.Delete("/stuff/:id", handler.DeleteRtr)
+
+	private.Get("/account", handler.GetAllUser)
+	private.Post("/account", handler.CreateUser)
+	private.Put("/account/:id", handler.UpdateUser)
+	private.Delete("/account/:id", handler.DeleteUser)
+
+	private.Get("/profile", middleware.ValidateToken, handler.GetProfile)
 }
 
-func (t *RtrHandler) GetAllRtr(c *fiber.Ctx) error {
-	res, err := t.RtrUC.FetchRtrs(c.Context())
+func (t *UserHandler) GetAllUser(c *fiber.Ctx) error {
+	res, err := t.UserUC.FetchUsers(c.Context())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -46,36 +50,8 @@ func (t *RtrHandler) GetAllRtr(c *fiber.Ctx) error {
 	})
 }
 
-func (t *RtrHandler) GetRtrByID(c *fiber.Ctx) error {
-	id := c.Params("id")
-	strId, erStr := strconv.Atoi(id)
-	if erStr != nil {
-		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
-			"status":  500,
-			"success": false,
-			"message": "Failed to parse id",
-			"error":   erStr.Error(),
-		})
-	}
-	res, err := t.RtrUC.FetchRtrByID(c.Context(), uint(strId))
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  500,
-			"success": false,
-			"message": err,
-			"error":   err.Error(),
-		})
-	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"status":  200,
-		"success": true,
-		"data":    res,
-		"message": "Successfully get user by id",
-	})
-}
-
-func (t *RtrHandler) CreateRtr(c *fiber.Ctx) error {
-	req := new(domain.Rtr)
+func (t *UserHandler) Login(c *fiber.Ctx) error {
+	req := new(domain.LoginPayload)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"status":  500,
@@ -93,7 +69,63 @@ func (t *RtrHandler) CreateRtr(c *fiber.Ctx) error {
 			"error":   er.Error(),
 		})
 	}
-	res, err := t.RtrUC.CreateRtr(c.Context(), req)
+	res, token, er := t.UserUC.LoginUser(c.Context(), req)
+	if er != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": er,
+			"error":   er.Error(),
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  200,
+		"success": true,
+		"data":    res,
+		"token":   token,
+		"message": "Successfully login",
+	})
+}
+
+func (t *UserHandler) GetProfile(c *fiber.Ctx) error {
+	id := middleware.UserID(c)
+	res, err := t.UserUC.FetchUserByID(c.Context(), uint(id))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": err,
+			"error":   err.Error(),
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  200,
+		"success": true,
+		"data":    res,
+		"message": "Successfully get profile",
+	})
+}
+
+func (t *UserHandler) CreateUser(c *fiber.Ctx) error {
+	req := new(domain.User)
+	if err := c.BodyParser(req); err != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": "Failed to parse body",
+			"error":   err,
+		})
+	}
+	valRes, er := govalidator.ValidateStruct(req)
+	if !valRes {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": "Failed to parse body",
+			"error":   er.Error(),
+		})
+	}
+	res, err := t.UserUC.AddUser(c.Context(), req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -110,8 +142,8 @@ func (t *RtrHandler) CreateRtr(c *fiber.Ctx) error {
 	})
 }
 
-func (t *RtrHandler) UpdateRtr(c *fiber.Ctx) error {
-	req := new(domain.Rtr)
+func (t *UserHandler) UpdateUser(c *fiber.Ctx) error {
+	req := new(domain.User)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"status":  500,
@@ -129,7 +161,7 @@ func (t *RtrHandler) UpdateRtr(c *fiber.Ctx) error {
 			"error":   er.Error(),
 		})
 	}
-	res, err := t.RtrUC.UpdateRtr(c.Context(), req)
+	res, err := t.UserUC.EditUser(c.Context(), req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -146,7 +178,7 @@ func (t *RtrHandler) UpdateRtr(c *fiber.Ctx) error {
 	})
 }
 
-func (t *RtrHandler) DeleteRtr(c *fiber.Ctx) error {
+func (t *UserHandler) DeleteUser(c *fiber.Ctx) error {
 	id := c.Params("id")
 	strId, erStr := strconv.Atoi(id)
 	if erStr != nil {
@@ -157,7 +189,7 @@ func (t *RtrHandler) DeleteRtr(c *fiber.Ctx) error {
 			"error":   erStr.Error(),
 		})
 	}
-	err := t.RtrUC.DeleteRtr(c.Context(), uint(strId))
+	err := t.UserUC.DeleteUser(c.Context(), uint(strId))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,

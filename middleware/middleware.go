@@ -1,14 +1,14 @@
 package middleware
 
 import (
-	"assyarif-backend-web-go/assyarif/repository"
-	"assyarif-backend-web-go/db"
-	"assyarif-backend-web-go/domain"
-	"assyarif-backend-web-go/utils/fiberutil"
 	"fmt"
 	"strconv"
 	"strings"
 	"time"
+	"vmuc-fintech-backend-web-go/db"
+	"vmuc-fintech-backend-web-go/domain"
+	"vmuc-fintech-backend-web-go/utils/fiberutil"
+	"vmuc-fintech-backend-web-go/vmuc/repository"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"

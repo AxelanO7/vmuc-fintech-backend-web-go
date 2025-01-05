@@ -1,4 +1,4 @@
-module assyarif-backend-web-go
+module vmuc-fintech-backend-web-go
 
 go 1.21.1
 

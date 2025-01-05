@@ -4,10 +4,10 @@ import (
 	"log"
 	"sync"
 
-	"assyarif-backend-web-go/assyarif/delivery"
-	"assyarif-backend-web-go/assyarif/repository"
-	"assyarif-backend-web-go/assyarif/usecase"
-	"assyarif-backend-web-go/db"
+	"vmuc-fintech-backend-web-go/db"
+	"vmuc-fintech-backend-web-go/vmuc/delivery"
+	"vmuc-fintech-backend-web-go/vmuc/repository"
+	"vmuc-fintech-backend-web-go/vmuc/usecase"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -22,28 +22,12 @@ func main() {
 	// appName := os.Getenv("APP_NAME")
 
 	usrRepo := repository.NewPostgreUser(db.GormClient.DB)
-	inRepo := repository.NewPostgreIn(db.GormClient.DB)
-	outRepo := repository.NewPostgreOut(db.GormClient.DB)
 	employeeRepo := repository.NewPostgreEmployee(db.GormClient.DB)
-	outletRepo := repository.NewPostgreOutlet(db.GormClient.DB)
-	stockRepo := repository.NewPostgreStock(db.GormClient.DB)
-	orderRepo := repository.NewPostgreOrder(db.GormClient.DB)
-	rtrRepo := repository.NewPostgreRtr(db.GormClient.DB)
-	stockOutletRepo := repository.NewPostgreStockOutlet(db.GormClient.DB)
-	opnameRepo := repository.NewPostgreOpname(db.GormClient.DB)
 
 	timeoutContext := fiber.Config{}.ReadTimeout
 
 	userUseCase := usecase.NewUserUseCase(usrRepo, timeoutContext)
-	inUseCase := usecase.NewInUseCase(inRepo, timeoutContext)
-	outUseCase := usecase.NewOutUseCase(outRepo, timeoutContext)
 	employeeUseCase := usecase.NewEmployeeUseCase(employeeRepo, timeoutContext)
-	outletUseCase := usecase.NewOutletUseCase(outletRepo, timeoutContext)
-	stockUseCase := usecase.NewStockUseCase(stockRepo, timeoutContext)
-	orderUseCase := usecase.NewOrderUseCase(orderRepo, timeoutContext)
-	rtrUseCase := usecase.NewRtrUseCase(rtrRepo, timeoutContext)
-	stockOutletUseCase := usecase.NewStockOutletUseCase(stockOutletRepo, timeoutContext)
-	opnameUseCase := usecase.NewOpnameUseCase(opnameRepo, timeoutContext)
 
 	app := fiber.New(fiber.Config{})
 	app.Use(logger.New(logger.Config{
@@ -57,18 +41,8 @@ func main() {
 	wg.Add(2)
 
 	go func() {
-
-		//call delivery http here
 		delivery.NewUserHandler(app, userUseCase)
-		delivery.NewInHandler(app, inUseCase)
-		delivery.NewOutHandler(app, outUseCase)
 		delivery.NewEmployeeHandler(app, employeeUseCase)
-		delivery.NewOutletHandler(app, outletUseCase)
-		delivery.NewStockHandler(app, stockUseCase)
-		delivery.NewOrderHandler(app, orderUseCase)
-		delivery.NewRtrHandler(app, rtrUseCase)
-		delivery.NewStockOutletHandler(app, stockOutletUseCase)
-		delivery.NewOpnameHandler(app, opnameUseCase)
 		log.Fatal(app.Listen(listenPort))
 		wg.Done()
 	}()

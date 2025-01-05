@@ -12,6 +12,7 @@ type Employee struct {
 	Name      string         `gorm:"not null" json:"name"`
 	Address   string         `gorm:"not null" json:"address"`
 	Phone     string         `gorm:"not null" json:"phone"`
+	Position  string         `gorm:"not null" json:"position"`
 	IdUser    uint           `gorm:"not null" json:"id_user"`
 	User      *User          `json:"user" gorm:"foreignKey:IdUser;references:ID"`
 	CreatedAt *time.Time     `json:"created_at"`

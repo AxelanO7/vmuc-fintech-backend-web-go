@@ -24,7 +24,7 @@ func NewRefHandler(c *fiber.App, das domain.RefUseCase) {
 	private.Get("/post", handler.GetAllRef)
 	private.Get("/post/:id", handler.GetRefByID)
 	private.Post("/post", handler.CreateRef)
-	private.Put("/post/:id", handler.UpdateRef)
+	private.Put("/post", handler.UpdateRef)
 	private.Delete("/post/:id", handler.DeleteRef)
 }
 

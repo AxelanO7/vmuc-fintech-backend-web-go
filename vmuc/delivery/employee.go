@@ -42,7 +42,7 @@ func (t *EmployeeHandler) GetAllEmployee(c *fiber.Ctx) error {
 		"status":  200,
 		"success": true,
 		"data":    res,
-		"message": "Successfully get all user",
+		"message": "Successfully get all employee",
 	})
 }
 
@@ -70,7 +70,7 @@ func (t *EmployeeHandler) GetEmployeeByID(c *fiber.Ctx) error {
 		"status":  200,
 		"success": true,
 		"data":    res,
-		"message": "Successfully get user by id",
+		"message": "Successfully get employee by id",
 	})
 }
 
@@ -106,7 +106,7 @@ func (t *EmployeeHandler) CreateEmployee(c *fiber.Ctx) error {
 		"status":  201,
 		"success": true,
 		"data":    res,
-		"message": "Successfully create user",
+		"message": "Successfully create employee",
 	})
 }
 
@@ -142,7 +142,7 @@ func (t *EmployeeHandler) UpdateEmployee(c *fiber.Ctx) error {
 		"status":  200,
 		"success": true,
 		"data":    res,
-		"message": "Successfully update user",
+		"message": "Successfully update employee",
 	})
 }
 
@@ -169,6 +169,6 @@ func (t *EmployeeHandler) DeleteEmployee(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status":  200,
 		"success": true,
-		"message": "Successfully delete user",
+		"message": "Successfully delete employee",
 	})
 }

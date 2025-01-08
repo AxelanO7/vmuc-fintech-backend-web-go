@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 	"time"
 	"vmuc-fintech-backend-web-go/domain"
 )
@@ -35,7 +34,7 @@ func (c *employeeUseCase) FetchEmployees(ctx context.Context) ([]domain.Employee
 	return res, nil
 }
 
-func (c *employeeUseCase) CreateEmployee(ctx context.Context, req *domain.Employee) (*domain.Employee, error) {
+func (c *employeeUseCase) AddEmployee(ctx context.Context, req *domain.Employee) (*domain.Employee, error) {
 	res, err := c.employeeRepository.CreateEmployee(req)
 	if err != nil {
 		return nil, err
@@ -43,7 +42,7 @@ func (c *employeeUseCase) CreateEmployee(ctx context.Context, req *domain.Employ
 	return res, nil
 }
 
-func (c *employeeUseCase) UpdateEmployee(ctx context.Context, req *domain.Employee) (*domain.Employee, error) {
+func (c *employeeUseCase) EditEmployee(ctx context.Context, req *domain.Employee) (*domain.Employee, error) {
 	res, err := c.employeeRepository.UpdateEmployee(req)
 	if err != nil {
 		return nil, err
@@ -57,20 +56,4 @@ func (c *employeeUseCase) DeleteEmployee(ctx context.Context, id uint) error {
 		return err
 	}
 	return nil
-}
-
-func (c *employeeUseCase) ShowEmployeeLastNumber(ctx context.Context) (int, error) {
-	var res []domain.Employee
-	res, err := c.employeeRepository.RetrieveAllEmployee()
-	if err != nil {
-		return 0, err
-	}
-	lastNumber := 0
-	for _, v := range res {
-		if v.ID > uint(lastNumber) {
-			lastNumber = int(v.ID)
-		}
-	}
-	fmt.Println(lastNumber)
-	return lastNumber, nil
 }

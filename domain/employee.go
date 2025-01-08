@@ -31,8 +31,7 @@ type EmployeeRepository interface {
 type EmployeeUseCase interface {
 	FetchEmployees(ctx context.Context) ([]Employee, error)
 	FetchEmployeeByID(ctx context.Context, id uint) (*Employee, error)
-	CreateEmployee(ctx context.Context, req *Employee) (*Employee, error)
-	UpdateEmployee(ctx context.Context, req *Employee) (*Employee, error)
+	AddEmployee(ctx context.Context, req *Employee) (*Employee, error)
+	EditEmployee(ctx context.Context, req *Employee) (*Employee, error)
 	DeleteEmployee(ctx context.Context, id uint) error
-	ShowEmployeeLastNumber(ctx context.Context) (int, error)
 }

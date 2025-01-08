@@ -93,7 +93,7 @@ func (t *EmployeeHandler) CreateEmployee(c *fiber.Ctx) error {
 			"error":   er.Error(),
 		})
 	}
-	res, err := t.EmployeeUC.CreateEmployee(c.Context(), req)
+	res, err := t.EmployeeUC.AddEmployee(c.Context(), req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -129,7 +129,7 @@ func (t *EmployeeHandler) UpdateEmployee(c *fiber.Ctx) error {
 			"error":   er.Error(),
 		})
 	}
-	res, err := t.EmployeeUC.UpdateEmployee(c.Context(), req)
+	res, err := t.EmployeeUC.EditEmployee(c.Context(), req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -170,23 +170,5 @@ func (t *EmployeeHandler) DeleteEmployee(c *fiber.Ctx) error {
 		"status":  200,
 		"success": true,
 		"message": "Successfully delete user",
-	})
-}
-
-func (t *EmployeeHandler) ShowEmployeeLastNumber(c *fiber.Ctx) error {
-	res, err := t.EmployeeUC.ShowEmployeeLastNumber(c.Context())
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status":  500,
-			"success": false,
-			"message": err,
-			"error":   err.Error(),
-		})
-	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"status":  200,
-		"success": true,
-		"data":    res,
-		"message": "Successfully get last number",
 	})
 }

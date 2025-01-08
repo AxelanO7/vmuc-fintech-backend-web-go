@@ -42,7 +42,7 @@ func (t *RefHandler) GetAllRef(c *fiber.Ctx) error {
 		"status":  200,
 		"success": true,
 		"data":    res,
-		"message": "Successfully get all user",
+		"message": "Successfully get all ref",
 	})
 }
 
@@ -70,7 +70,7 @@ func (t *RefHandler) GetRefByID(c *fiber.Ctx) error {
 		"status":  200,
 		"success": true,
 		"data":    res,
-		"message": "Successfully get user by id",
+		"message": "Successfully get ref by id",
 	})
 }
 
@@ -106,7 +106,7 @@ func (t *RefHandler) CreateRef(c *fiber.Ctx) error {
 		"status":  201,
 		"success": true,
 		"data":    res,
-		"message": "Successfully create user",
+		"message": "Successfully create ref",
 	})
 }
 
@@ -142,7 +142,7 @@ func (t *RefHandler) UpdateRef(c *fiber.Ctx) error {
 		"status":  200,
 		"success": true,
 		"data":    res,
-		"message": "Successfully update user",
+		"message": "Successfully update ref",
 	})
 }
 
@@ -169,6 +169,6 @@ func (t *RefHandler) DeleteRef(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status":  200,
 		"success": true,
-		"message": "Successfully delete user",
+		"message": "Successfully delete ref",
 	})
 }

@@ -22,15 +22,15 @@ func main() {
 	// appName := os.Getenv("APP_NAME")
 
 	usrRepo := repository.NewPostgreUser(db.GormClient.DB)
-	employeeRepo := repository.NewPostgreEmployee(db.GormClient.DB)
 	refRepo := repository.NewPostgreRef(db.GormClient.DB)
+	employeeRepo := repository.NewPostgreEmployee(db.GormClient.DB)
 	payrollRepo := repository.NewPostgrePayroll(db.GormClient.DB)
 
 	timeoutContext := fiber.Config{}.ReadTimeout
 
 	userUseCase := usecase.NewUserUseCase(usrRepo, timeoutContext)
-	employeeUseCase := usecase.NewEmployeeUseCase(employeeRepo, timeoutContext)
 	refUseCase := usecase.NewRefUseCase(refRepo, timeoutContext)
+	employeeUseCase := usecase.NewEmployeeUseCase(employeeRepo, timeoutContext)
 	payrollUseCase := usecase.NewPayrollUseCase(payrollRepo, timeoutContext)
 
 	app := fiber.New(fiber.Config{})
@@ -46,8 +46,8 @@ func main() {
 
 	go func() {
 		delivery.NewUserHandler(app, userUseCase)
-		delivery.NewEmployeeHandler(app, employeeUseCase)
 		delivery.NewRefHandler(app, refUseCase)
+		delivery.NewEmployeeHandler(app, employeeUseCase)
 		delivery.NewPayrollHandler(app, payrollUseCase)
 		log.Fatal(app.Listen(listenPort))
 		wg.Done()

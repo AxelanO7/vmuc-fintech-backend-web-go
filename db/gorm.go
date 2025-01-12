@@ -43,8 +43,8 @@ func NewMySQLClient() {
 func RegisterTableToMigrate(db *gorm.DB) {
 	e := db.AutoMigrate(
 		&domain.User{},
-		&domain.Employee{},
 		&domain.Ref{},
+		&domain.Employee{},
 		&domain.Payroll{},
 	)
 	if e != nil {

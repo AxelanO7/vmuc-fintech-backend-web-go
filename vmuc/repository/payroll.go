@@ -59,6 +59,17 @@ func (a *posgrePayrollRepository) CreatePayroll(payroll *domain.Payroll) (*domai
 	return payroll, nil
 }
 
+func (a *posgrePayrollRepository) CreateBulkPayroll(payrolls []*domain.Payroll) ([]*domain.Payroll, error) {
+	err := a.DB.
+		Model(domain.Payroll{}).
+		Create(&payrolls).Error
+	if err != nil {
+		return []*domain.Payroll{}, err
+	}
+	fmt.Println("create bulk payroll ", payrolls)
+	return payrolls, nil
+}
+
 func (a *posgrePayrollRepository) UpdatePayroll(payroll *domain.Payroll) (*domain.Payroll, error) {
 	err := a.DB.
 		Model(domain.Payroll{}).
@@ -69,6 +80,17 @@ func (a *posgrePayrollRepository) UpdatePayroll(payroll *domain.Payroll) (*domai
 	}
 	fmt.Println("update payroll ", payroll)
 	return payroll, nil
+}
+
+func (a *posgrePayrollRepository) UpdateBulkPayroll(payrolls []*domain.Payroll) ([]*domain.Payroll, error) {
+	err := a.DB.
+		Model(domain.Payroll{}).
+		Updates(&payrolls).Error
+	if err != nil {
+		return []*domain.Payroll{}, err
+	}
+	fmt.Println("update bulk payroll ", payrolls)
+	return payrolls, nil
 }
 
 func (a *posgrePayrollRepository) DeletePayroll(id uint) error {

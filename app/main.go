@@ -25,6 +25,7 @@ func main() {
 	refRepo := repository.NewPostgreRef(db.GormClient.DB)
 	employeeRepo := repository.NewPostgreEmployee(db.GormClient.DB)
 	payrollRepo := repository.NewPostgrePayroll(db.GormClient.DB)
+	payrollPeriodeRepo := repository.NewPostgrePayrollPeriode(db.GormClient.DB)
 
 	timeoutContext := fiber.Config{}.ReadTimeout
 
@@ -32,6 +33,7 @@ func main() {
 	refUseCase := usecase.NewRefUseCase(refRepo, timeoutContext)
 	employeeUseCase := usecase.NewEmployeeUseCase(employeeRepo, timeoutContext)
 	payrollUseCase := usecase.NewPayrollUseCase(payrollRepo, timeoutContext)
+	payrollPeriodeUseCase := usecase.NewPayrollPeriodeUseCase(payrollPeriodeRepo, payrollRepo, timeoutContext)
 
 	app := fiber.New(fiber.Config{})
 	app.Use(logger.New(logger.Config{
@@ -49,6 +51,7 @@ func main() {
 		delivery.NewRefHandler(app, refUseCase)
 		delivery.NewEmployeeHandler(app, employeeUseCase)
 		delivery.NewPayrollHandler(app, payrollUseCase)
+		delivery.NewPayrollPeriodeHandler(app, payrollPeriodeUseCase)
 		log.Fatal(app.Listen(listenPort))
 		wg.Done()
 	}()

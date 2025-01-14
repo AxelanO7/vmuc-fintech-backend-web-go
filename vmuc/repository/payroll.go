@@ -22,7 +22,7 @@ func (a *posgrePayrollRepository) RetrieveAllPayroll() ([]domain.Payroll, error)
 	var res []domain.Payroll
 	err := a.DB.
 		Model(domain.Payroll{}).
-		Preload("User").
+		Preload("Employee").
 		Find(&res).Error
 	if err != nil {
 		return []domain.Payroll{}, err
@@ -36,7 +36,7 @@ func (a *posgrePayrollRepository) RetrievePayrollByID(id uint) (*domain.Payroll,
 	err := a.DB.
 		Model(domain.Payroll{}).
 		Where("id = ?", id).
-		Preload("User").
+		Preload("Employee").
 		Take(&res).Error
 	if err != nil {
 		return &domain.Payroll{}, err
@@ -46,6 +46,22 @@ func (a *posgrePayrollRepository) RetrievePayrollByID(id uint) (*domain.Payroll,
 	}
 	fmt.Println("retrieve payroll by id ", res)
 	return &res, nil
+}
+
+func (a *posgrePayrollRepository) GetPayrollByPayrollPeriodeId(id uint) ([]domain.Payroll, error) {
+	var res []domain.Payroll
+	err := a.DB.
+		Model(domain.Payroll{}).
+		Where("id_payroll_periode = ?", id).
+		Find(&res).Error
+	if err != nil {
+		return []domain.Payroll{}, err
+	}
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return []domain.Payroll{}, fmt.Errorf("record not found")
+	}
+	fmt.Println("retrieve payroll by id ", res)
+	return res, nil
 }
 
 func (a *posgrePayrollRepository) CreatePayroll(payroll *domain.Payroll) (*domain.Payroll, error) {

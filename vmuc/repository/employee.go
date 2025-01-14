@@ -22,7 +22,6 @@ func (a *posgreEmployeeRepository) RetrieveAllEmployee() ([]domain.Employee, err
 	var res []domain.Employee
 	err := a.DB.
 		Model(domain.Employee{}).
-		Preload("User").
 		Find(&res).Error
 	if err != nil {
 		return []domain.Employee{}, err

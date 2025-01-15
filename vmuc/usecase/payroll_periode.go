@@ -48,6 +48,15 @@ func (c *payrollPeriodeUseCase) AddPayrollPeriode(ctx context.Context, req *doma
 	if err != nil {
 		return nil, err
 	}
+	payrolls := make([]*domain.Payroll, 0)
+	for i := range req.Payrolls {
+		req.Payrolls[i].IdPayrollPeriode = res.ID
+		payrolls = append(payrolls, &req.Payrolls[i])
+	}
+	_, err = c.payrollRepository.CreateBulkPayroll(payrolls)
+	if err != nil {
+		return nil, err
+	}
 	return res, nil
 }
 

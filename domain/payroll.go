@@ -8,18 +8,18 @@ import (
 )
 
 type Payroll struct {
-	ID               uint            `gorm:"primarykey;AUTO_INCREMENT" json:"id"`
-	Salary           int             `json:"salary"`
-	Bonus            int             `json:"bonus"`
-	Penalty          int             `json:"penalty"`
-	Total            int             `json:"total"`
-	IdPayrollPeriode uint            `gorm:"not null" json:"id_payroll_periode"`
-	IdEmployee       uint            `gorm:"not null" json:"id_employee"`
-	Employee         *Employee       `json:"employee" gorm:"foreignKey:IdEmployee;references:ID"`
-	PayrollPeriode   *PayrollPeriode `json:"payroll_periode" gorm:"foreignKey:IdPayrollPeriode;references:ID"`
-	CreatedAt        *time.Time      `json:"created_at"`
-	UpdatedAt        *time.Time      `json:"updated_at"`
-	DeletedAt        gorm.DeletedAt  `gorm:"index" json:"deleted_at"`
+	ID             uint           `gorm:"primarykey;AUTO_INCREMENT" json:"id"`
+	Salary         int            `json:"salary"`
+	Bonus          int            `json:"bonus"`
+	Penalty        int            `json:"penalty"`
+	Total          int            `json:"total"`
+	IdPeriode      uint           `gorm:"not null" json:"id_periode"`
+	IdEmployee     uint           `gorm:"not null" json:"id_employee"`
+	Employee       *Employee      `json:"employee" gorm:"foreignKey:IdEmployee;references:ID"`
+	PayrollPeriode *Periode       `json:"payroll_periode" gorm:"foreignKey:IdPayrollPeriode;references:ID"`
+	CreatedAt      *time.Time     `json:"created_at"`
+	UpdatedAt      *time.Time     `json:"updated_at"`
+	DeletedAt      gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 }
 
 type PayrollRepository interface {

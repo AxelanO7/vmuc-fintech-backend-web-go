@@ -8,30 +8,30 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type PayrollPeriodeHandler struct {
-	PayrollPeriodeUC domain.PayrollPeriodeUseCase
+type AdjusmentEntriesHandler struct {
+	AdjusmentEntriesUC domain.AdjusmentEntriesUseCase
 }
 
-func NewPayrollPeriodeHandler(c *fiber.App, das domain.PayrollPeriodeUseCase) {
-	handler := &PayrollPeriodeHandler{
-		PayrollPeriodeUC: das,
+func NewAdjusmentEntriesHandler(c *fiber.App, das domain.AdjusmentEntriesUseCase) {
+	handler := &AdjusmentEntriesHandler{
+		AdjusmentEntriesUC: das,
 	}
-	api := c.Group("/payroll-periode")
+	api := c.Group("/adjusment-entries")
 
 	_ = api.Group("/public")
 
 	private := api.Group("/private")
-	private.Get("/employee", handler.GetAllPayrollPeriode)
-	private.Get("/employee/:id", handler.GetPayrollPeriodeByID)
-	private.Post("/employee", handler.CreatePayrollPeriode)
-	private.Post("/employees", handler.CreateBulkPayrollPeriode)
-	private.Put("/employee/:id", handler.UpdatePayrollPeriode)
-	private.Put("/employees", handler.UpdateBulkPayrollPeriode)
-	private.Delete("/employee/:id", handler.DeletePayrollPeriode)
+	private.Get("/employee", handler.GetAllAdjusmentEntries)
+	private.Get("/employee/:id", handler.GetAdjusmentEntriesByID)
+	private.Post("/employee", handler.CreateAdjusmentEntries)
+	private.Post("/employees", handler.CreateBulkAdjusmentEntries)
+	private.Put("/employee/:id", handler.UpdateAdjusmentEntries)
+	private.Put("/employees", handler.UpdateBulkAdjusmentEntries)
+	private.Delete("/employee/:id", handler.DeleteAdjusmentEntries)
 }
 
-func (t *PayrollPeriodeHandler) GetAllPayrollPeriode(c *fiber.Ctx) error {
-	res, err := t.PayrollPeriodeUC.FetchPayrollPeriode(c.Context())
+func (t *AdjusmentEntriesHandler) GetAllAdjusmentEntries(c *fiber.Ctx) error {
+	res, err := t.AdjusmentEntriesUC.FetchAdjusmentEntriess(c.Context())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -44,11 +44,11 @@ func (t *PayrollPeriodeHandler) GetAllPayrollPeriode(c *fiber.Ctx) error {
 		"status":  200,
 		"success": true,
 		"data":    res,
-		"message": "Successfully get all payrollPeriode",
+		"message": "Successfully get all payroll",
 	})
 }
 
-func (t *PayrollPeriodeHandler) GetPayrollPeriodeByID(c *fiber.Ctx) error {
+func (t *AdjusmentEntriesHandler) GetAdjusmentEntriesByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 	strId, erStr := strconv.Atoi(id)
 	if erStr != nil {
@@ -59,7 +59,7 @@ func (t *PayrollPeriodeHandler) GetPayrollPeriodeByID(c *fiber.Ctx) error {
 			"error":   erStr.Error(),
 		})
 	}
-	res, err := t.PayrollPeriodeUC.FetchPayrollPeriodeByID(c.Context(), uint(strId))
+	res, err := t.AdjusmentEntriesUC.FetchAdjusmentEntriesByID(c.Context(), uint(strId))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -72,12 +72,12 @@ func (t *PayrollPeriodeHandler) GetPayrollPeriodeByID(c *fiber.Ctx) error {
 		"status":  200,
 		"success": true,
 		"data":    res,
-		"message": "Successfully get payrollPeriode by id",
+		"message": "Successfully get payroll by id",
 	})
 }
 
-func (t *PayrollPeriodeHandler) CreatePayrollPeriode(c *fiber.Ctx) error {
-	req := new(domain.PayrollPeriode)
+func (t *AdjusmentEntriesHandler) CreateAdjusmentEntries(c *fiber.Ctx) error {
+	req := new(domain.AdjusmentEntries)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"status":  500,
@@ -95,7 +95,7 @@ func (t *PayrollPeriodeHandler) CreatePayrollPeriode(c *fiber.Ctx) error {
 			"error":   er.Error(),
 		})
 	}
-	res, err := t.PayrollPeriodeUC.AddPayrollPeriode(c.Context(), req)
+	res, err := t.AdjusmentEntriesUC.AddAdjusmentEntries(c.Context(), req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -108,12 +108,12 @@ func (t *PayrollPeriodeHandler) CreatePayrollPeriode(c *fiber.Ctx) error {
 		"status":  201,
 		"success": true,
 		"data":    res,
-		"message": "Successfully create payrollPeriode",
+		"message": "Successfully create payroll",
 	})
 }
 
-func (t *PayrollPeriodeHandler) CreateBulkPayrollPeriode(c *fiber.Ctx) error {
-	req := new([]domain.PayrollPeriode)
+func (t *AdjusmentEntriesHandler) CreateBulkAdjusmentEntries(c *fiber.Ctx) error {
+	req := new([]domain.AdjusmentEntries)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"status":  500,
@@ -122,12 +122,12 @@ func (t *PayrollPeriodeHandler) CreateBulkPayrollPeriode(c *fiber.Ctx) error {
 			"error":   err,
 		})
 	}
-	var payrollPeriodes []*domain.PayrollPeriode
-	for _, payrollPeriode := range *req {
-		payrollPeriode := payrollPeriode
-		payrollPeriodes = append(payrollPeriodes, &payrollPeriode)
+	var payrolls []*domain.AdjusmentEntries
+	for _, payroll := range *req {
+		payroll := payroll
+		payrolls = append(payrolls, &payroll)
 	}
-	res, err := t.PayrollPeriodeUC.AddBulkPayrollPeriode(c.Context(), payrollPeriodes)
+	res, err := t.AdjusmentEntriesUC.AddBulkAdjusmentEntries(c.Context(), payrolls)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -140,12 +140,12 @@ func (t *PayrollPeriodeHandler) CreateBulkPayrollPeriode(c *fiber.Ctx) error {
 		"status":  201,
 		"success": true,
 		"data":    res,
-		"message": "Successfully create bulk payrollPeriode",
+		"message": "Successfully create bulk payroll",
 	})
 }
 
-func (t *PayrollPeriodeHandler) UpdatePayrollPeriode(c *fiber.Ctx) error {
-	req := new(domain.PayrollPeriode)
+func (t *AdjusmentEntriesHandler) UpdateAdjusmentEntries(c *fiber.Ctx) error {
+	req := new(domain.AdjusmentEntries)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"status":  500,
@@ -163,7 +163,7 @@ func (t *PayrollPeriodeHandler) UpdatePayrollPeriode(c *fiber.Ctx) error {
 			"error":   er.Error(),
 		})
 	}
-	res, err := t.PayrollPeriodeUC.EditPayrollPeriode(c.Context(), req)
+	res, err := t.AdjusmentEntriesUC.EditAdjusmentEntries(c.Context(), req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -176,12 +176,12 @@ func (t *PayrollPeriodeHandler) UpdatePayrollPeriode(c *fiber.Ctx) error {
 		"status":  200,
 		"success": true,
 		"data":    res,
-		"message": "Successfully update payrollPeriode",
+		"message": "Successfully update payroll",
 	})
 }
 
-func (t *PayrollPeriodeHandler) UpdateBulkPayrollPeriode(c *fiber.Ctx) error {
-	req := new([]domain.PayrollPeriode)
+func (t *AdjusmentEntriesHandler) UpdateBulkAdjusmentEntries(c *fiber.Ctx) error {
+	req := new([]domain.AdjusmentEntries)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"status":  500,
@@ -190,12 +190,12 @@ func (t *PayrollPeriodeHandler) UpdateBulkPayrollPeriode(c *fiber.Ctx) error {
 			"error":   err,
 		})
 	}
-	var payrollPeriodes []*domain.PayrollPeriode
-	for _, payrollPeriode := range *req {
-		payrollPeriode := payrollPeriode
-		payrollPeriodes = append(payrollPeriodes, &payrollPeriode)
+	var payrolls []*domain.AdjusmentEntries
+	for _, payroll := range *req {
+		payroll := payroll
+		payrolls = append(payrolls, &payroll)
 	}
-	res, err := t.PayrollPeriodeUC.EditBulkPayrollPeriode(c.Context(), payrollPeriodes)
+	res, err := t.AdjusmentEntriesUC.EditBulkAdjusmentEntries(c.Context(), payrolls)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -208,11 +208,11 @@ func (t *PayrollPeriodeHandler) UpdateBulkPayrollPeriode(c *fiber.Ctx) error {
 		"status":  200,
 		"success": true,
 		"data":    res,
-		"message": "Successfully update bulk payrollPeriode",
+		"message": "Successfully update bulk payroll",
 	})
 }
 
-func (t *PayrollPeriodeHandler) DeletePayrollPeriode(c *fiber.Ctx) error {
+func (t *AdjusmentEntriesHandler) DeleteAdjusmentEntries(c *fiber.Ctx) error {
 	id := c.Params("id")
 	strId, erStr := strconv.Atoi(id)
 	if erStr != nil {
@@ -223,7 +223,7 @@ func (t *PayrollPeriodeHandler) DeletePayrollPeriode(c *fiber.Ctx) error {
 			"error":   erStr.Error(),
 		})
 	}
-	err := t.PayrollPeriodeUC.DeletePayrollPeriode(c.Context(), uint(strId))
+	err := t.AdjusmentEntriesUC.DeleteAdjusmentEntries(c.Context(), uint(strId))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -235,6 +235,6 @@ func (t *PayrollPeriodeHandler) DeletePayrollPeriode(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status":  200,
 		"success": true,
-		"message": "Successfully delete payrollPeriode",
+		"message": "Successfully delete payroll",
 	})
 }

@@ -52,7 +52,7 @@ func (a *posgrePayrollRepository) GetPayrollByPayrollPeriodeId(id uint) ([]domai
 	var res []domain.Payroll
 	err := a.DB.
 		Model(domain.Payroll{}).
-		Where("id_payroll_periode = ?", id).
+		Where("id_periode = ?", id).
 		Preload("Employee").
 		Find(&res).Error
 	if err != nil {

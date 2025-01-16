@@ -25,7 +25,10 @@ func main() {
 	refRepo := repository.NewPostgreRef(db.GormClient.DB)
 	employeeRepo := repository.NewPostgreEmployee(db.GormClient.DB)
 	payrollRepo := repository.NewPostgrePayroll(db.GormClient.DB)
-	payrollPeriodeRepo := repository.NewPostgrePayrollPeriode(db.GormClient.DB)
+	periodeRepo := repository.NewPostgrePeriode(db.GormClient.DB)
+	adjusmentEntriesRepo := repository.NewPostgreAdjusmentEntries(db.GormClient.DB)
+	generalJournalRepo := repository.NewPostgreGeneralJournal(db.GormClient.DB)
+	trialBalanceRepo := repository.NewPostgreTrialBalance(db.GormClient.DB)
 
 	timeoutContext := fiber.Config{}.ReadTimeout
 
@@ -33,7 +36,10 @@ func main() {
 	refUseCase := usecase.NewRefUseCase(refRepo, timeoutContext)
 	employeeUseCase := usecase.NewEmployeeUseCase(employeeRepo, timeoutContext)
 	payrollUseCase := usecase.NewPayrollUseCase(payrollRepo, timeoutContext)
-	payrollPeriodeUseCase := usecase.NewPayrollPeriodeUseCase(payrollPeriodeRepo, payrollRepo, timeoutContext)
+	periodeUseCase := usecase.NewPeriodeUseCase(periodeRepo, payrollRepo, timeoutContext)
+	adjusmentEntriesUseCase := usecase.NewAdjusmentEntriesUseCase(adjusmentEntriesRepo, timeoutContext)
+	generalJournalUseCase := usecase.NewGeneralJournalUseCase(generalJournalRepo, timeoutContext)
+	trialBalanceUseCase := usecase.NewTrialBalanceUseCase(trialBalanceRepo, timeoutContext)
 
 	app := fiber.New(fiber.Config{})
 	app.Use(logger.New(logger.Config{
@@ -51,7 +57,10 @@ func main() {
 		delivery.NewRefHandler(app, refUseCase)
 		delivery.NewEmployeeHandler(app, employeeUseCase)
 		delivery.NewPayrollHandler(app, payrollUseCase)
-		delivery.NewPayrollPeriodeHandler(app, payrollPeriodeUseCase)
+		delivery.NewPeriodeHandler(app, periodeUseCase)
+		delivery.NewAdjusmentEntriesHandler(app, adjusmentEntriesUseCase)
+		delivery.NewGeneralJournalHandler(app, generalJournalUseCase)
+		delivery.NewTrialBalanceHandler(app, trialBalanceUseCase)
 		log.Fatal(app.Listen(listenPort))
 		wg.Done()
 	}()

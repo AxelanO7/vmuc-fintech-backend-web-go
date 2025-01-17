@@ -8,17 +8,17 @@ import (
 )
 
 type TrialBalance struct {
-	ID               uint           `gorm:"primarykey;AUTO_INCREMENT" json:"id"`
-	NameAccount      string         `json:"name_account"`
-	IdRef            int            `gorm:"not null" json:"id_ref"`
-	Debit            float64        `json:"debit"`
-	Kredit           float64        `json:"kredit"`
-	IdPayrollPeriode uint           `gorm:"not null" json:"id_periode"`
-	PayrollPeriode   *Periode       `json:"payroll_periode" gorm:"foreignKey:IdPayrollPeriode;references:ID"`
-	Ref              *Ref           `json:"ref" gorm:"foreignKey:IdRef;references:ID"`
-	CreatedAt        *time.Time     `json:"created_at"`
-	UpdatedAt        *time.Time     `json:"updated_at"`
-	DeletedAt        gorm.DeletedAt `gorm:"index" json:"deleted_at"`
+	ID          uint           `gorm:"primarykey;AUTO_INCREMENT" json:"id"`
+	NameAccount string         `json:"name_account"`
+	IdRef       int            `gorm:"not null" json:"id_ref"`
+	Debit       float64        `json:"debit"`
+	Kredit      float64        `json:"kredit"`
+	IdPeriode   uint           `gorm:"not null" json:"id_periode"`
+	Periode     *Periode       `json:"payroll_periode" gorm:"foreignKey:IdPeriode;references:ID"`
+	Ref         *Ref           `json:"ref" gorm:"foreignKey:IdRef;references:ID"`
+	CreatedAt   *time.Time     `json:"created_at"`
+	UpdatedAt   *time.Time     `json:"updated_at"`
+	DeletedAt   gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 }
 
 type TrialBalanceRepository interface {

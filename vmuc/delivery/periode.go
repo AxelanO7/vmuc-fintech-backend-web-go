@@ -22,6 +22,9 @@ func NewPeriodeHandler(c *fiber.App, das domain.PeriodeUseCase) {
 
 	private := api.Group("/private")
 	private.Get("/payroll-employee", handler.GetAllPayrollPeriode)
+	private.Get("/adjusment-entries", handler.GetAllAdjusmentEntriesPeriode)
+	private.Get("/general-journal", handler.GetAllGeneralJournalPeriode)
+	private.Get("/trial-balance", handler.GetAllTrialBalancePeriode)
 	private.Get("/employee/:id", handler.GetPeriodeByID)
 	private.Post("/employee", handler.CreatePeriode)
 	private.Post("/employees", handler.CreateBulkPeriode)
@@ -32,6 +35,60 @@ func NewPeriodeHandler(c *fiber.App, das domain.PeriodeUseCase) {
 
 func (t *PeriodeHandler) GetAllPayrollPeriode(c *fiber.Ctx) error {
 	res, err := t.PeriodeUC.FetchPayrollPeriode(c.Context())
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": err,
+			"error":   err.Error(),
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  200,
+		"success": true,
+		"data":    res,
+		"message": "Successfully get all Periode",
+	})
+}
+
+func (t *PeriodeHandler) GetAllAdjusmentEntriesPeriode(c *fiber.Ctx) error {
+	res, err := t.PeriodeUC.FetchAdjusmentEntriesPeriode(c.Context())
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": err,
+			"error":   err.Error(),
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  200,
+		"success": true,
+		"data":    res,
+		"message": "Successfully get all Periode",
+	})
+}
+
+func (t *PeriodeHandler) GetAllGeneralJournalPeriode(c *fiber.Ctx) error {
+	res, err := t.PeriodeUC.FetchGeneralJournalPeriode(c.Context())
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": err,
+			"error":   err.Error(),
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  200,
+		"success": true,
+		"data":    res,
+		"message": "Successfully get all Periode",
+	})
+}
+
+func (t *PeriodeHandler) GetAllTrialBalancePeriode(c *fiber.Ctx) error {
+	res, err := t.PeriodeUC.FetchTrialBalancePeriode(c.Context())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,

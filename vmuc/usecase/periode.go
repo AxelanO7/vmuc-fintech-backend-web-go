@@ -7,16 +7,22 @@ import (
 )
 
 type periodeUseCase struct {
-	periodeRepository domain.PeriodeRepository
-	payrollRepository domain.PayrollRepository
-	contextTimeout    time.Duration
+	periodeRepository          domain.PeriodeRepository
+	payrollRepository          domain.PayrollRepository
+	adjusmentEntriesRepository domain.AdjusmentEntriesRepository
+	generalJournalRepository   domain.GeneralJournalRepository
+	trialBalanceRepository     domain.TrialBalanceRepository
+	contextTimeout             time.Duration
 }
 
-func NewPeriodeUseCase(payroll domain.PeriodeRepository, payrep domain.PayrollRepository, t time.Duration) domain.PeriodeUseCase {
+func NewPeriodeUseCase(payroll domain.PeriodeRepository, payrep domain.PayrollRepository, adrep domain.AdjusmentEntriesRepository, genrep domain.GeneralJournalRepository, trirep domain.TrialBalanceRepository, t time.Duration) domain.PeriodeUseCase {
 	return &periodeUseCase{
-		periodeRepository: payroll,
-		payrollRepository: payrep,
-		contextTimeout:    t,
+		periodeRepository:          payroll,
+		payrollRepository:          payrep,
+		adjusmentEntriesRepository: adrep,
+		generalJournalRepository:   genrep,
+		trialBalanceRepository:     trirep,
+		contextTimeout:             t,
 	}
 }
 
@@ -38,6 +44,63 @@ func (c *periodeUseCase) FetchPayrollPeriode(ctx context.Context) ([]domain.Peri
 			return nil, err
 		}
 		payrollPeriodes[i].Payrolls = payrolls
+	}
+
+	return payrollPeriodes, nil
+}
+
+func (c *periodeUseCase) FetchAdjusmentEntriesPeriode(ctx context.Context) ([]domain.Periode, error) {
+	// Ambil semua data PayrollPeriode
+	payrollPeriodes, err := c.periodeRepository.RetrieveAllPeriode()
+	if err != nil {
+		return nil, err
+	}
+
+	// Ambil data Payroll untuk setiap PayrollPeriode
+	for i := range payrollPeriodes {
+		payrolls, err := c.adjusmentEntriesRepository.GetAdjusmentEntriesByAdjusmentEntriesPeriodeId(payrollPeriodes[i].ID)
+		if err != nil {
+			return nil, err
+		}
+		payrollPeriodes[i].AdjusmentEntries = payrolls
+	}
+
+	return payrollPeriodes, nil
+}
+
+func (c *periodeUseCase) FetchGeneralJournalPeriode(ctx context.Context) ([]domain.Periode, error) {
+	// Ambil semua data PayrollPeriode
+	payrollPeriodes, err := c.periodeRepository.RetrieveAllPeriode()
+	if err != nil {
+		return nil, err
+	}
+
+	// Ambil data Payroll untuk setiap PayrollPeriode
+	for i := range payrollPeriodes {
+		payrolls, err := c.generalJournalRepository.GetGeneralJournalByGeneralJournalPeriodeId(payrollPeriodes[i].ID)
+		if err != nil {
+			return nil, err
+		}
+		payrollPeriodes[i].GeneralJournal = payrolls
+	}
+
+	return payrollPeriodes, nil
+}
+
+func (c *periodeUseCase) FetchTrialBalancePeriode(ctx context.Context) ([]domain.Periode, error) {
+	// Ambil semua data PayrollPeriode
+	payrollPeriodes, err := c.periodeRepository.RetrieveAllPeriode()
+	if err != nil {
+		return nil, err
+	}
+
+	// Ambil data Payroll untuk setiap PayrollPeriode
+	for i := range payrollPeriodes {
+		payrolls, err := c.trialBalanceRepository.GetTrialBalanceByTrialBalancePeriodeId(payrollPeriodes[i].ID)
+		if err != nil {
+			return nil, err
+		}
+		payrollPeriodes[i].TrialBalance = payrolls
 	}
 
 	return payrollPeriodes, nil

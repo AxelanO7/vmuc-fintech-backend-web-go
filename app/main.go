@@ -36,7 +36,7 @@ func main() {
 	refUseCase := usecase.NewRefUseCase(refRepo, timeoutContext)
 	employeeUseCase := usecase.NewEmployeeUseCase(employeeRepo, timeoutContext)
 	payrollUseCase := usecase.NewPayrollUseCase(payrollRepo, timeoutContext)
-	periodeUseCase := usecase.NewPeriodeUseCase(periodeRepo, payrollRepo, timeoutContext)
+	periodeUseCase := usecase.NewPeriodeUseCase(periodeRepo, payrollRepo, adjusmentEntriesRepo, generalJournalRepo, trialBalanceRepo, timeoutContext)
 	adjusmentEntriesUseCase := usecase.NewAdjusmentEntriesUseCase(adjusmentEntriesRepo, timeoutContext)
 	generalJournalUseCase := usecase.NewGeneralJournalUseCase(generalJournalRepo, timeoutContext)
 	trialBalanceUseCase := usecase.NewTrialBalanceUseCase(trialBalanceRepo, timeoutContext)

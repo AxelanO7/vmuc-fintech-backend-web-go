@@ -16,7 +16,7 @@ func NewTrialBalanceHandler(c *fiber.App, das domain.TrialBalanceUseCase) {
 	handler := &TrialBalanceHandler{
 		TrialBalanceUC: das,
 	}
-	api := c.Group("/payroll")
+	api := c.Group("/trial-balance")
 
 	_ = api.Group("/public")
 

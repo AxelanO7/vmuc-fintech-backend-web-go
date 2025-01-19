@@ -30,11 +30,14 @@ func NewPeriodeHandler(c *fiber.App, das domain.PeriodeUseCase) {
 
 	private.Post("/employee", handler.CreatePeriode)
 	private.Post("/employees", handler.CreateBulkPeriode)
-	
+
 	private.Put("/employee/:id", handler.UpdatePeriode)
 	private.Put("/employees", handler.UpdateBulkPeriode)
 
 	private.Delete("/employee/:id", handler.DeletePeriode)
+
+	payroll := private.Group("/payroll")
+	payroll.Post("/", handler.CreatePayrollWithPeriode)
 }
 
 func (t *PeriodeHandler) GetAllPayrollPeriode(c *fiber.Ctx) error {
@@ -297,5 +300,41 @@ func (t *PeriodeHandler) DeletePeriode(c *fiber.Ctx) error {
 		"status":  200,
 		"success": true,
 		"message": "Successfully delete Periode",
+	})
+}
+
+func (t *PeriodeHandler) CreatePayrollWithPeriode(c *fiber.Ctx) error {
+	req := new(domain.PayrollPeriode)
+	if err := c.BodyParser(req); err != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": "Failed to parse body",
+			"error":   err.Error(),
+		})
+	}
+	valRes, er := govalidator.ValidateStruct(req)
+	if !valRes {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": "Failed to validate body",
+			"error":   er.Error(),
+		})
+	}
+	res, err := t.PeriodeUC.AddPayrollPeriode(c.Context(), req)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": err,
+			"error":   err.Error(),
+		})
+	}
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"status":  201,
+		"success": true,
+		"data":    res,
+		"message": "Successfully create Payroll Periode",
 	})
 }

@@ -22,6 +22,16 @@ type Payroll struct {
 	DeletedAt  gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 }
 
+type PayrollPeriode struct {
+	ID          uint           `gorm:"primarykey;AUTO_INCREMENT" json:"id"`
+	Period      string         `gorm:"not null" json:"period"`
+	Description string         `gorm:"not null" json:"description"`
+	Payrolls    []Payroll      `gorm:"-" json:"payroll"`
+	CreatedAt   *time.Time     `json:"created_at"`
+	UpdatedAt   *time.Time     `json:"updated_at"`
+	DeletedAt   gorm.DeletedAt `gorm:"index" json:"deleted_at"`
+}
+
 type PayrollRepository interface {
 	RetrieveAllPayroll() ([]Payroll, error)
 	RetrievePayrollByID(id uint) (*Payroll, error)

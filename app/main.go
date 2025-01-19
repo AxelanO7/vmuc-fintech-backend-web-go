@@ -42,7 +42,7 @@ func main() {
 	adjusmentEntriesUseCase := usecase.NewAdjusmentEntriesUseCase(adjusmentEntriesRepo, timeoutContext)
 	generalJournalUseCase := usecase.NewGeneralJournalUseCase(generalJournalRepo, timeoutContext)
 	trialBalanceUseCase := usecase.NewTrialBalanceUseCase(trialBalanceRepo, timeoutContext)
-	generalLedgerUseCase := usecase.NewGeneralLedgerUseCase(generalLedgerRepo, timeoutContext)
+	generalLedgerUseCase := usecase.NewGeneralLedgerUseCase(generalLedgerRepo, periodeRepo, generalJournalRepo, timeoutContext)
 	worksheetUseCase := usecase.NewWorksheetUseCase(worksheetRepo, timeoutContext)
 
 	app := fiber.New(fiber.Config{})

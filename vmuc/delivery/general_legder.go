@@ -8,30 +8,30 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type TrialBalanceHandler struct {
-	TrialBalanceUC domain.TrialBalanceUseCase
+type GeneralLedgerHandler struct {
+	GeneralLedgerUC domain.GeneralLedgerUseCase
 }
 
-func NewTrialBalanceHandler(c *fiber.App, das domain.TrialBalanceUseCase) {
-	handler := &TrialBalanceHandler{
-		TrialBalanceUC: das,
+func NewGeneralLedgerHandler(c *fiber.App, das domain.GeneralLedgerUseCase) {
+	handler := &GeneralLedgerHandler{
+		GeneralLedgerUC: das,
 	}
-	api := c.Group("/trial-balance")
+	api := c.Group("/general-ledger")
 
 	_ = api.Group("/public")
 
 	private := api.Group("/private")
-	private.Get("/employee", handler.GetAllTrialBalance)
-	private.Get("/employee/:id", handler.GetTrialBalanceByID)
-	private.Post("/employee", handler.CreateTrialBalance)
-	private.Post("/employees", handler.CreateBulkTrialBalance)
-	private.Put("/employee/:id", handler.UpdateTrialBalance)
-	private.Put("/employees", handler.UpdateBulkTrialBalance)
-	private.Delete("/employee/:id", handler.DeleteTrialBalance)
+	private.Get("/employee", handler.GetAllGeneralLedger)
+	private.Get("/employee/:id", handler.GetGeneralLedgerByID)
+	private.Post("/employee", handler.CreateGeneralLedger)
+	private.Post("/employees", handler.CreateBulkGeneralLedger)
+	private.Put("/employee/:id", handler.UpdateGeneralLedger)
+	private.Put("/employees", handler.UpdateBulkGeneralLedger)
+	private.Delete("/employee/:id", handler.DeleteGeneralLedger)
 }
 
-func (t *TrialBalanceHandler) GetAllTrialBalance(c *fiber.Ctx) error {
-	res, err := t.TrialBalanceUC.FetchTrialBalances(c.Context())
+func (t *GeneralLedgerHandler) GetAllGeneralLedger(c *fiber.Ctx) error {
+	res, err := t.GeneralLedgerUC.FetchGeneralLedgers(c.Context())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -48,7 +48,7 @@ func (t *TrialBalanceHandler) GetAllTrialBalance(c *fiber.Ctx) error {
 	})
 }
 
-func (t *TrialBalanceHandler) GetTrialBalanceByID(c *fiber.Ctx) error {
+func (t *GeneralLedgerHandler) GetGeneralLedgerByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 	strId, erStr := strconv.Atoi(id)
 	if erStr != nil {
@@ -59,7 +59,7 @@ func (t *TrialBalanceHandler) GetTrialBalanceByID(c *fiber.Ctx) error {
 			"error":   erStr.Error(),
 		})
 	}
-	res, err := t.TrialBalanceUC.FetchTrialBalanceByID(c.Context(), uint(strId))
+	res, err := t.GeneralLedgerUC.FetchGeneralLedgerByID(c.Context(), uint(strId))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -76,8 +76,8 @@ func (t *TrialBalanceHandler) GetTrialBalanceByID(c *fiber.Ctx) error {
 	})
 }
 
-func (t *TrialBalanceHandler) CreateTrialBalance(c *fiber.Ctx) error {
-	req := new(domain.TrialBalance)
+func (t *GeneralLedgerHandler) CreateGeneralLedger(c *fiber.Ctx) error {
+	req := new(domain.GeneralLedger)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"status":  500,
@@ -95,7 +95,7 @@ func (t *TrialBalanceHandler) CreateTrialBalance(c *fiber.Ctx) error {
 			"error":   er.Error(),
 		})
 	}
-	res, err := t.TrialBalanceUC.AddTrialBalance(c.Context(), req)
+	res, err := t.GeneralLedgerUC.AddGeneralLedger(c.Context(), req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -112,8 +112,8 @@ func (t *TrialBalanceHandler) CreateTrialBalance(c *fiber.Ctx) error {
 	})
 }
 
-func (t *TrialBalanceHandler) CreateBulkTrialBalance(c *fiber.Ctx) error {
-	req := new([]domain.TrialBalance)
+func (t *GeneralLedgerHandler) CreateBulkGeneralLedger(c *fiber.Ctx) error {
+	req := new([]domain.GeneralLedger)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"status":  500,
@@ -122,12 +122,12 @@ func (t *TrialBalanceHandler) CreateBulkTrialBalance(c *fiber.Ctx) error {
 			"error":   err,
 		})
 	}
-	var payrolls []*domain.TrialBalance
+	var payrolls []*domain.GeneralLedger
 	for _, payroll := range *req {
 		payroll := payroll
 		payrolls = append(payrolls, &payroll)
 	}
-	res, err := t.TrialBalanceUC.AddBulkTrialBalance(c.Context(), payrolls)
+	res, err := t.GeneralLedgerUC.AddBulkGeneralLedger(c.Context(), payrolls)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -144,8 +144,8 @@ func (t *TrialBalanceHandler) CreateBulkTrialBalance(c *fiber.Ctx) error {
 	})
 }
 
-func (t *TrialBalanceHandler) UpdateTrialBalance(c *fiber.Ctx) error {
-	req := new(domain.TrialBalance)
+func (t *GeneralLedgerHandler) UpdateGeneralLedger(c *fiber.Ctx) error {
+	req := new(domain.GeneralLedger)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"status":  500,
@@ -163,7 +163,7 @@ func (t *TrialBalanceHandler) UpdateTrialBalance(c *fiber.Ctx) error {
 			"error":   er.Error(),
 		})
 	}
-	res, err := t.TrialBalanceUC.EditTrialBalance(c.Context(), req)
+	res, err := t.GeneralLedgerUC.EditGeneralLedger(c.Context(), req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -180,8 +180,8 @@ func (t *TrialBalanceHandler) UpdateTrialBalance(c *fiber.Ctx) error {
 	})
 }
 
-func (t *TrialBalanceHandler) UpdateBulkTrialBalance(c *fiber.Ctx) error {
-	req := new([]domain.TrialBalance)
+func (t *GeneralLedgerHandler) UpdateBulkGeneralLedger(c *fiber.Ctx) error {
+	req := new([]domain.GeneralLedger)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"status":  500,
@@ -190,12 +190,12 @@ func (t *TrialBalanceHandler) UpdateBulkTrialBalance(c *fiber.Ctx) error {
 			"error":   err,
 		})
 	}
-	var payrolls []*domain.TrialBalance
+	var payrolls []*domain.GeneralLedger
 	for _, payroll := range *req {
 		payroll := payroll
 		payrolls = append(payrolls, &payroll)
 	}
-	res, err := t.TrialBalanceUC.EditBulkTrialBalance(c.Context(), payrolls)
+	res, err := t.GeneralLedgerUC.EditBulkGeneralLedger(c.Context(), payrolls)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -212,7 +212,7 @@ func (t *TrialBalanceHandler) UpdateBulkTrialBalance(c *fiber.Ctx) error {
 	})
 }
 
-func (t *TrialBalanceHandler) DeleteTrialBalance(c *fiber.Ctx) error {
+func (t *GeneralLedgerHandler) DeleteGeneralLedger(c *fiber.Ctx) error {
 	id := c.Params("id")
 	strId, erStr := strconv.Atoi(id)
 	if erStr != nil {
@@ -223,7 +223,7 @@ func (t *TrialBalanceHandler) DeleteTrialBalance(c *fiber.Ctx) error {
 			"error":   erStr.Error(),
 		})
 	}
-	err := t.TrialBalanceUC.DeleteTrialBalance(c.Context(), uint(strId))
+	err := t.GeneralLedgerUC.DeleteGeneralLedger(c.Context(), uint(strId))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,

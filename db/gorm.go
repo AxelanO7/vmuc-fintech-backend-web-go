@@ -50,6 +50,8 @@ func RegisterTableToMigrate(db *gorm.DB) {
 		&domain.AdjusmentEntries{},
 		&domain.GeneralJournal{},
 		&domain.TrialBalance{},
+		&domain.GeneralLedger{},
+		&domain.Worksheet{},
 	)
 	if e != nil {
 		log.Fatal(e)

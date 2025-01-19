@@ -8,30 +8,30 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type TrialBalanceHandler struct {
-	TrialBalanceUC domain.TrialBalanceUseCase
+type WorksheetHandler struct {
+	WorksheetUC domain.WorksheetUseCase
 }
 
-func NewTrialBalanceHandler(c *fiber.App, das domain.TrialBalanceUseCase) {
-	handler := &TrialBalanceHandler{
-		TrialBalanceUC: das,
+func NewWorksheetHandler(c *fiber.App, das domain.WorksheetUseCase) {
+	handler := &WorksheetHandler{
+		WorksheetUC: das,
 	}
-	api := c.Group("/trial-balance")
+	api := c.Group("/general-ledger")
 
 	_ = api.Group("/public")
 
 	private := api.Group("/private")
-	private.Get("/employee", handler.GetAllTrialBalance)
-	private.Get("/employee/:id", handler.GetTrialBalanceByID)
-	private.Post("/employee", handler.CreateTrialBalance)
-	private.Post("/employees", handler.CreateBulkTrialBalance)
-	private.Put("/employee/:id", handler.UpdateTrialBalance)
-	private.Put("/employees", handler.UpdateBulkTrialBalance)
-	private.Delete("/employee/:id", handler.DeleteTrialBalance)
+	private.Get("/employee", handler.GetAllWorksheet)
+	private.Get("/employee/:id", handler.GetWorksheetByID)
+	private.Post("/employee", handler.CreateWorksheet)
+	private.Post("/employees", handler.CreateBulkWorksheet)
+	private.Put("/employee/:id", handler.UpdateWorksheet)
+	private.Put("/employees", handler.UpdateBulkWorksheet)
+	private.Delete("/employee/:id", handler.DeleteWorksheet)
 }
 
-func (t *TrialBalanceHandler) GetAllTrialBalance(c *fiber.Ctx) error {
-	res, err := t.TrialBalanceUC.FetchTrialBalances(c.Context())
+func (t *WorksheetHandler) GetAllWorksheet(c *fiber.Ctx) error {
+	res, err := t.WorksheetUC.FetchWorksheets(c.Context())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -48,7 +48,7 @@ func (t *TrialBalanceHandler) GetAllTrialBalance(c *fiber.Ctx) error {
 	})
 }
 
-func (t *TrialBalanceHandler) GetTrialBalanceByID(c *fiber.Ctx) error {
+func (t *WorksheetHandler) GetWorksheetByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 	strId, erStr := strconv.Atoi(id)
 	if erStr != nil {
@@ -59,7 +59,7 @@ func (t *TrialBalanceHandler) GetTrialBalanceByID(c *fiber.Ctx) error {
 			"error":   erStr.Error(),
 		})
 	}
-	res, err := t.TrialBalanceUC.FetchTrialBalanceByID(c.Context(), uint(strId))
+	res, err := t.WorksheetUC.FetchWorksheetByID(c.Context(), uint(strId))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -76,8 +76,8 @@ func (t *TrialBalanceHandler) GetTrialBalanceByID(c *fiber.Ctx) error {
 	})
 }
 
-func (t *TrialBalanceHandler) CreateTrialBalance(c *fiber.Ctx) error {
-	req := new(domain.TrialBalance)
+func (t *WorksheetHandler) CreateWorksheet(c *fiber.Ctx) error {
+	req := new(domain.Worksheet)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"status":  500,
@@ -95,7 +95,7 @@ func (t *TrialBalanceHandler) CreateTrialBalance(c *fiber.Ctx) error {
 			"error":   er.Error(),
 		})
 	}
-	res, err := t.TrialBalanceUC.AddTrialBalance(c.Context(), req)
+	res, err := t.WorksheetUC.AddWorksheet(c.Context(), req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -112,8 +112,8 @@ func (t *TrialBalanceHandler) CreateTrialBalance(c *fiber.Ctx) error {
 	})
 }
 
-func (t *TrialBalanceHandler) CreateBulkTrialBalance(c *fiber.Ctx) error {
-	req := new([]domain.TrialBalance)
+func (t *WorksheetHandler) CreateBulkWorksheet(c *fiber.Ctx) error {
+	req := new([]domain.Worksheet)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"status":  500,
@@ -122,12 +122,12 @@ func (t *TrialBalanceHandler) CreateBulkTrialBalance(c *fiber.Ctx) error {
 			"error":   err,
 		})
 	}
-	var payrolls []*domain.TrialBalance
+	var payrolls []*domain.Worksheet
 	for _, payroll := range *req {
 		payroll := payroll
 		payrolls = append(payrolls, &payroll)
 	}
-	res, err := t.TrialBalanceUC.AddBulkTrialBalance(c.Context(), payrolls)
+	res, err := t.WorksheetUC.AddBulkWorksheet(c.Context(), payrolls)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -144,8 +144,8 @@ func (t *TrialBalanceHandler) CreateBulkTrialBalance(c *fiber.Ctx) error {
 	})
 }
 
-func (t *TrialBalanceHandler) UpdateTrialBalance(c *fiber.Ctx) error {
-	req := new(domain.TrialBalance)
+func (t *WorksheetHandler) UpdateWorksheet(c *fiber.Ctx) error {
+	req := new(domain.Worksheet)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"status":  500,
@@ -163,7 +163,7 @@ func (t *TrialBalanceHandler) UpdateTrialBalance(c *fiber.Ctx) error {
 			"error":   er.Error(),
 		})
 	}
-	res, err := t.TrialBalanceUC.EditTrialBalance(c.Context(), req)
+	res, err := t.WorksheetUC.EditWorksheet(c.Context(), req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -180,8 +180,8 @@ func (t *TrialBalanceHandler) UpdateTrialBalance(c *fiber.Ctx) error {
 	})
 }
 
-func (t *TrialBalanceHandler) UpdateBulkTrialBalance(c *fiber.Ctx) error {
-	req := new([]domain.TrialBalance)
+func (t *WorksheetHandler) UpdateBulkWorksheet(c *fiber.Ctx) error {
+	req := new([]domain.Worksheet)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"status":  500,
@@ -190,12 +190,12 @@ func (t *TrialBalanceHandler) UpdateBulkTrialBalance(c *fiber.Ctx) error {
 			"error":   err,
 		})
 	}
-	var payrolls []*domain.TrialBalance
+	var payrolls []*domain.Worksheet
 	for _, payroll := range *req {
 		payroll := payroll
 		payrolls = append(payrolls, &payroll)
 	}
-	res, err := t.TrialBalanceUC.EditBulkTrialBalance(c.Context(), payrolls)
+	res, err := t.WorksheetUC.EditBulkWorksheet(c.Context(), payrolls)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,
@@ -212,7 +212,7 @@ func (t *TrialBalanceHandler) UpdateBulkTrialBalance(c *fiber.Ctx) error {
 	})
 }
 
-func (t *TrialBalanceHandler) DeleteTrialBalance(c *fiber.Ctx) error {
+func (t *WorksheetHandler) DeleteWorksheet(c *fiber.Ctx) error {
 	id := c.Params("id")
 	strId, erStr := strconv.Atoi(id)
 	if erStr != nil {
@@ -223,7 +223,7 @@ func (t *TrialBalanceHandler) DeleteTrialBalance(c *fiber.Ctx) error {
 			"error":   erStr.Error(),
 		})
 	}
-	err := t.TrialBalanceUC.DeleteTrialBalance(c.Context(), uint(strId))
+	err := t.WorksheetUC.DeleteWorksheet(c.Context(), uint(strId))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,

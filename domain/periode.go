@@ -42,4 +42,5 @@ type PeriodeUseCase interface {
 	EditPeriode(ctx context.Context, req *Periode) (*Periode, error)
 	EditBulkPeriode(ctx context.Context, req []*Periode) ([]*Periode, error)
 	DeletePeriode(ctx context.Context, id uint) error
+	AddPayrollPeriode(ctx context.Context, req *PayrollPeriode) (*PayrollPeriode, error)
 }

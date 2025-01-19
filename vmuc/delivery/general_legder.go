@@ -23,6 +23,7 @@ func NewGeneralLedgerHandler(c *fiber.App, das domain.GeneralLedgerUseCase) {
 	private := api.Group("/private")
 	private.Get("/employee", handler.GetAllGeneralLedger)
 	private.Get("/employee/:id", handler.GetGeneralLedgerByID)
+	private.Get("/employee-report/:id", handler.GetGeneralLedgerByIDReport)
 	private.Post("/employee", handler.CreateGeneralLedger)
 	private.Post("/employees", handler.CreateBulkGeneralLedger)
 	private.Put("/employee/:id", handler.UpdateGeneralLedger)
@@ -59,7 +60,35 @@ func (t *GeneralLedgerHandler) GetGeneralLedgerByID(c *fiber.Ctx) error {
 			"error":   erStr.Error(),
 		})
 	}
-	res, err := t.GeneralLedgerUC.FetchGeneralLedgerByID(c.Context(), uint(strId))
+	res, err := t.GeneralLedgerUC.FetchGeneralLedgerByID(c.Context(), uint(strId), false)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": err,
+			"error":   err.Error(),
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  200,
+		"success": true,
+		"data":    res,
+		"message": "Successfully get payroll by id",
+	})
+}
+
+func (t *GeneralLedgerHandler) GetGeneralLedgerByIDReport(c *fiber.Ctx) error {
+	id := c.Params("id")
+	strId, erStr := strconv.Atoi(id)
+	if erStr != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": "Failed to parse id",
+			"error":   erStr.Error(),
+		})
+	}
+	res, err := t.GeneralLedgerUC.FetchGeneralLedgerByID(c.Context(), uint(strId), true)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,

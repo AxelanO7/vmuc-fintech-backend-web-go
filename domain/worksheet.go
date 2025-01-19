@@ -10,7 +10,7 @@ import (
 type Worksheet struct {
 	ID            uint           `gorm:"primarykey;AUTO_INCREMENT" json:"id"`
 	NameWorksheet string         `json:"name_worksheet"`
-	Date          time.Time      `json:"date"`
+	Date          string         `json:"date"`
 	CreatedAt     *time.Time     `json:"created_at"`
 	UpdatedAt     *time.Time     `json:"updated_at"`
 	DeletedAt     gorm.DeletedAt `gorm:"index" json:"deleted_at"`

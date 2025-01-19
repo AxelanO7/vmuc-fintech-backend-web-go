@@ -30,6 +30,22 @@ func (a *posgrePeriodeRepository) RetrieveAllPeriode() ([]domain.Periode, error)
 	return res, nil
 }
 
+func (a *posgrePeriodeRepository) GetBeriodeByPeriode(periode string) (*domain.Periode, error) {
+	var res domain.Periode
+	err := a.DB.
+		Model(domain.Periode{}).
+		Where("periode = ?", periode).
+		Take(&res).Error
+	if err != nil {
+		return &domain.Periode{}, err
+	}
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return &domain.Periode{}, fmt.Errorf("record not found")
+	}
+	fmt.Println("retrieve payroll by id ", res)
+	return &res, nil
+}
+
 func (a *posgrePeriodeRepository) RetrievePeriodeByID(id uint) (*domain.Periode, error) {
 	var res domain.Periode
 	err := a.DB.

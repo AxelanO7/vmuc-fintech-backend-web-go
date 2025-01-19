@@ -22,6 +22,7 @@ type Periode struct {
 
 type PeriodeRepository interface {
 	RetrieveAllPeriode() ([]Periode, error)
+	GetBeriodeByPeriode(periode string) (*Periode, error)
 	RetrievePeriodeByID(id uint) (*Periode, error)
 	CreatePeriode(Periode *Periode) (*Periode, error)
 	CreateBulkPeriode(Periode []*Periode) ([]*Periode, error)

@@ -10,7 +10,7 @@ import (
 type GeneralLedger struct {
 	ID                uint           `gorm:"primarykey;AUTO_INCREMENT" json:"id"`
 	NameGeneralLedger string         `json:"name_general_ledger"`
-	Date              time.Time      `json:"date"`
+	Date              string         `json:"date"`
 	CreatedAt         *time.Time     `json:"created_at"`
 	UpdatedAt         *time.Time     `json:"updated_at"`
 	DeletedAt         gorm.DeletedAt `gorm:"index" json:"deleted_at"`
@@ -29,7 +29,7 @@ type GeneralLedgerRepository interface {
 
 type GeneralLedgerUseCase interface {
 	FetchGeneralLedgers(ctx context.Context) ([]GeneralLedger, error)
-	FetchGeneralLedgerByID(ctx context.Context, id uint) (*GeneralLedger, error)
+	FetchGeneralLedgerByID(ctx context.Context, id uint, opt bool) (map[string]any, error)
 	AddGeneralLedger(ctx context.Context, req *GeneralLedger) (*GeneralLedger, error)
 	AddBulkGeneralLedger(ctx context.Context, req []*GeneralLedger) ([]*GeneralLedger, error)
 	EditGeneralLedger(ctx context.Context, req *GeneralLedger) (*GeneralLedger, error)

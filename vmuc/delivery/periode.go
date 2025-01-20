@@ -26,15 +26,13 @@ func NewPeriodeHandler(c *fiber.App, das domain.PeriodeUseCase) {
 	private.Get("/general-journal", handler.GetAllGeneralJournalPeriode)
 	private.Get("/trial-balance", handler.GetAllTrialBalancePeriode)
 
-	private.Get("/employee/:id", handler.GetPeriodeByID)
-
-	private.Post("/employee", handler.CreatePeriode)
-	private.Post("/employees", handler.CreateBulkPeriode)
-
-	private.Put("/employee/:id", handler.UpdatePeriode)
-	private.Put("/employees", handler.UpdateBulkPeriode)
-
-	private.Delete("/employee/:id", handler.DeletePeriode)
+	general := private.Group("/general")
+	general.Get("/:id", handler.GetPeriodeByID)
+	general.Post("/", handler.CreatePeriode)
+	general.Post("/", handler.CreateBulkPeriode)
+	general.Put("/:id", handler.UpdatePeriode)
+	general.Put("/", handler.UpdateBulkPeriode)
+	general.Delete("/:id", handler.DeletePeriode)
 
 	payroll := private.Group("/payroll")
 	payroll.Post("/", handler.CreatePayrollWithPeriode)

@@ -16,13 +16,14 @@ func NewWorksheetHandler(c *fiber.App, das domain.WorksheetUseCase) {
 	handler := &WorksheetHandler{
 		WorksheetUC: das,
 	}
-	api := c.Group("/general-ledger")
+	api := c.Group("/worksheet")
 
 	_ = api.Group("/public")
 
 	private := api.Group("/private")
 	private.Get("/employee", handler.GetAllWorksheet)
 	private.Get("/employee/:id", handler.GetWorksheetByID)
+	private.Get("/report-worksheet/:id", handler.GetWorksheetByID)
 	private.Post("/employee", handler.CreateWorksheet)
 	private.Post("/employees", handler.CreateBulkWorksheet)
 	private.Put("/employee/:id", handler.UpdateWorksheet)
@@ -59,7 +60,35 @@ func (t *WorksheetHandler) GetWorksheetByID(c *fiber.Ctx) error {
 			"error":   erStr.Error(),
 		})
 	}
-	res, err := t.WorksheetUC.FetchWorksheetByID(c.Context(), uint(strId))
+	res, err := t.WorksheetUC.FetchWorksheetByID(c.Context(), uint(strId), false)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": err,
+			"error":   err.Error(),
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  200,
+		"success": true,
+		"data":    res,
+		"message": "Successfully get payroll by id",
+	})
+}
+
+func (t *WorksheetHandler) GetWorksheetByIDForReport(c *fiber.Ctx) error {
+	id := c.Params("id")
+	strId, erStr := strconv.Atoi(id)
+	if erStr != nil {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": "Failed to parse id",
+			"error":   erStr.Error(),
+		})
+	}
+	res, err := t.WorksheetUC.FetchWorksheetByID(c.Context(), uint(strId), true)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,

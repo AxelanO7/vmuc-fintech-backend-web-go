@@ -43,7 +43,7 @@ func main() {
 	generalJournalUseCase := usecase.NewGeneralJournalUseCase(generalJournalRepo, timeoutContext)
 	trialBalanceUseCase := usecase.NewTrialBalanceUseCase(trialBalanceRepo, timeoutContext)
 	generalLedgerUseCase := usecase.NewGeneralLedgerUseCase(generalLedgerRepo, periodeRepo, generalJournalRepo, timeoutContext)
-	worksheetUseCase := usecase.NewWorksheetUseCase(worksheetRepo, timeoutContext)
+	worksheetUseCase := usecase.NewWorksheetUseCase(worksheetRepo, generalJournalRepo, adjusmentEntriesRepo, periodeRepo, timeoutContext)
 
 	app := fiber.New(fiber.Config{})
 	app.Use(logger.New(logger.Config{

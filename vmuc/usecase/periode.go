@@ -140,23 +140,55 @@ func (c *periodeUseCase) DeletePeriode(ctx context.Context, id uint) error {
 }
 
 func (c *periodeUseCase) AddPayrollPeriode(ctx context.Context, req *domain.PayrollPeriode) (*domain.PayrollPeriode, error) {
-	periods, err := c.periodeRepository.RetrieveAllPeriode()
+	// periods, err := c.periodeRepository.RetrieveAllPeriode()
+	// if err != nil {
+	// 	return nil, fmt.Errorf("error retrieving all periods: %w", err)
+	// }
+
+	// var period *domain.Periode
+	// // check if period already exists
+	// for i := range periods {
+	// 	if periods[i].Period == req.Period {
+	// 		period = &periods[i]
+	// 		break
+	// 	}
+	// }
+
+	// // if period does not exist, create new period
+	// if period == nil {
+	// 	period, err = c.periodeRepository.CreatePeriode(&domain.Periode{
+	// 		Period:      req.Period,
+	// 		Description: req.Description,
+	// 	})
+	// 	if err != nil {
+	// 		return nil, fmt.Errorf("error creating period: %w", err)
+	// 	}
+	// }
+
+	// // change period id to new period id
+	// for i := range req.Payrolls {
+	// 	req.Payrolls[i].IdPeriode = period.ID
+	// }
+
+	// // check if payrolls is empty
+	// if len(req.Payrolls) == 0 {
+	// 	return req, nil
+	// }
+
+	// // create bulk payroll
+	// payrolls := make([]*domain.Payroll, len(req.Payrolls))
+	// for i := range req.Payrolls {
+	// 	payrolls[i] = &req.Payrolls[i]
+	// }
+	// _, err = c.payrollRepository.CreateBulkPayroll(payrolls)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("error creating bulk payroll: %w", err)
+	// }
+	// return req, nil
+
+	res, err := c.periodeRepository.GetBeriodeByPeriode(req.Period)
 	if err != nil {
-		return nil, fmt.Errorf("error retrieving all periods: %w", err)
-	}
-
-	var period *domain.Periode
-	// check if period already exists
-	for i := range periods {
-		if periods[i].Period == req.Period {
-			period = &periods[i]
-			break
-		}
-	}
-
-	// if period does not exist, create new period
-	if period == nil {
-		period, err = c.periodeRepository.CreatePeriode(&domain.Periode{
+		_, err := c.periodeRepository.CreatePeriode(&domain.Periode{
 			Period:      req.Period,
 			Description: req.Description,
 		})
@@ -165,24 +197,25 @@ func (c *periodeUseCase) AddPayrollPeriode(ctx context.Context, req *domain.Payr
 		}
 	}
 
-	// change period id to new period id
-	for i := range req.Payrolls {
-		req.Payrolls[i].IdPeriode = period.ID
+	for _, val := range req.Payrolls {
+		val.IdPeriode = res.ID
+		_, err := c.payrollRepository.CreatePayroll(&val)
+		if err != nil {
+			return nil, err
+		}
+
+		payload := domain.GeneralJournal{
+			NameAccount: "beban gaji",
+			Date:        time.Now(),
+			Information: "beban gaji",
+			Kredit:      float64(val.Total),
+		}
+
+		_, err = c.generalJournalRepository.CreateGeneralJournal(&payload)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	// check if payrolls is empty
-	if len(req.Payrolls) == 0 {
-		return req, nil
-	}
-
-	// create bulk payroll
-	payrolls := make([]*domain.Payroll, len(req.Payrolls))
-	for i := range req.Payrolls {
-		payrolls[i] = &req.Payrolls[i]
-	}
-	_, err = c.payrollRepository.CreateBulkPayroll(payrolls)
-	if err != nil {
-		return nil, fmt.Errorf("error creating bulk payroll: %w", err)
-	}
-	return req, nil
+	return nil, nil
 }

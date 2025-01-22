@@ -29,7 +29,7 @@ type WorksheetRepository interface {
 
 type WorksheetUseCase interface {
 	FetchWorksheets(ctx context.Context) ([]Worksheet, error)
-	FetchWorksheetByID(ctx context.Context, id uint) (*Worksheet, error)
+	FetchWorksheetByID(ctx context.Context, id uint, opt bool) (map[string]any, error)
 	AddWorksheet(ctx context.Context, req *Worksheet) (*Worksheet, error)
 	AddBulkWorksheet(ctx context.Context, req []*Worksheet) ([]*Worksheet, error)
 	EditWorksheet(ctx context.Context, req *Worksheet) (*Worksheet, error)

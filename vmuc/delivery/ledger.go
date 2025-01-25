@@ -16,22 +16,22 @@ func NewLedgerHandler(c *fiber.App, das domain.LedgerUseCase) {
 	handler := &LedgerHandler{
 		LedgerUC: das,
 	}
-	api := c.Group("/general-ledger")
+	api := c.Group("/journal")
 
 	_ = api.Group("/public")
 
 	private := api.Group("/private")
-	private.Get("/employee", handler.GetAllGeneralLedger)
-	private.Get("/employee/:id", handler.GetGeneralLedgerByID)
-	private.Get("/employee-report/:id", handler.GetGeneralLedgerByIDReport)
-	private.Post("/employee", handler.CreateGeneralLedger)
-	private.Post("/employees", handler.CreateBulkGeneralLedger)
-	private.Put("/employee/:id", handler.UpdateGeneralLedger)
-	private.Put("/employees", handler.UpdateBulkGeneralLedger)
-	private.Delete("/employee/:id", handler.DeleteGeneralLedger)
+	private.Get("/ledger", handler.GetLedgers)
+	private.Get("/ledger/:id", handler.GetLedgerByID)
+	private.Get("/ledger-report/:id", handler.GetLedgerByIdReport)
+	private.Post("/ledger", handler.CreateLedger)
+	private.Post("/ledgers", handler.CreateBulkLedger)
+	private.Put("/ledger/:id", handler.UpdateLedger)
+	private.Put("/ledgers", handler.UpdateBulkLedger)
+	private.Delete("/ledger/:id", handler.DeleteLedger)
 }
 
-func (t *LedgerHandler) GetAllGeneralLedger(c *fiber.Ctx) error {
+func (t *LedgerHandler) GetLedgers(c *fiber.Ctx) error {
 	res, err := t.LedgerUC.FetchLedgers(c.Context())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -49,7 +49,7 @@ func (t *LedgerHandler) GetAllGeneralLedger(c *fiber.Ctx) error {
 	})
 }
 
-func (t *LedgerHandler) GetGeneralLedgerByID(c *fiber.Ctx) error {
+func (t *LedgerHandler) GetLedgerByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 	strId, erStr := strconv.Atoi(id)
 	if erStr != nil {
@@ -77,7 +77,7 @@ func (t *LedgerHandler) GetGeneralLedgerByID(c *fiber.Ctx) error {
 	})
 }
 
-func (t *LedgerHandler) GetGeneralLedgerByIDReport(c *fiber.Ctx) error {
+func (t *LedgerHandler) GetLedgerByIdReport(c *fiber.Ctx) error {
 	id := c.Params("id")
 	strId, erStr := strconv.Atoi(id)
 	if erStr != nil {
@@ -105,7 +105,7 @@ func (t *LedgerHandler) GetGeneralLedgerByIDReport(c *fiber.Ctx) error {
 	})
 }
 
-func (t *LedgerHandler) CreateGeneralLedger(c *fiber.Ctx) error {
+func (t *LedgerHandler) CreateLedger(c *fiber.Ctx) error {
 	req := new(domain.Ledger)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
@@ -141,7 +141,7 @@ func (t *LedgerHandler) CreateGeneralLedger(c *fiber.Ctx) error {
 	})
 }
 
-func (t *LedgerHandler) CreateBulkGeneralLedger(c *fiber.Ctx) error {
+func (t *LedgerHandler) CreateBulkLedger(c *fiber.Ctx) error {
 	req := new([]domain.Ledger)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
@@ -173,7 +173,7 @@ func (t *LedgerHandler) CreateBulkGeneralLedger(c *fiber.Ctx) error {
 	})
 }
 
-func (t *LedgerHandler) UpdateGeneralLedger(c *fiber.Ctx) error {
+func (t *LedgerHandler) UpdateLedger(c *fiber.Ctx) error {
 	req := new(domain.Ledger)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
@@ -209,7 +209,7 @@ func (t *LedgerHandler) UpdateGeneralLedger(c *fiber.Ctx) error {
 	})
 }
 
-func (t *LedgerHandler) UpdateBulkGeneralLedger(c *fiber.Ctx) error {
+func (t *LedgerHandler) UpdateBulkLedger(c *fiber.Ctx) error {
 	req := new([]domain.Ledger)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
@@ -241,7 +241,7 @@ func (t *LedgerHandler) UpdateBulkGeneralLedger(c *fiber.Ctx) error {
 	})
 }
 
-func (t *LedgerHandler) DeleteGeneralLedger(c *fiber.Ctx) error {
+func (t *LedgerHandler) DeleteLedger(c *fiber.Ctx) error {
 	id := c.Params("id")
 	strId, erStr := strconv.Atoi(id)
 	if erStr != nil {

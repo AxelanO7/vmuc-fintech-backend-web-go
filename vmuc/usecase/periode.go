@@ -281,7 +281,7 @@ func (c *periodeUseCase) AddPayrollPeriode(ctx context.Context, req *domain.Payr
 
 		payload := domain.GeneralJournal{
 			NameAccount: "beban gaji",
-			Date:        time.Now(),
+			Date:        time.Now().Format(time.RFC3339),
 			Information: "beban gaji",
 			Kredit:      float64(val.Total),
 		}

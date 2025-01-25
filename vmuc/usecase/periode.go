@@ -261,7 +261,7 @@ func (c *periodeUseCase) AddPayrollPeriode(ctx context.Context, req *domain.Payr
 	// }
 	// return req, nil
 
-	res, err := c.periodeRepository.GetBeriodeByPeriode(req.Period)
+	res, err := c.periodeRepository.GetPeriodeByPeriode(req.Period)
 	if err != nil {
 		_, err := c.periodeRepository.CreatePeriode(&domain.Periode{
 			Period:      req.Period,

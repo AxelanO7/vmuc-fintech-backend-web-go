@@ -6,25 +6,25 @@ import (
 	"vmuc-fintech-backend-web-go/domain"
 )
 
-type generalLedgerUseCase struct {
-	generalLedgerRepository  domain.GeneralLedgerRepository
+type ledgerUseCase struct {
+	ledgerRepository         domain.LedgerRepository
 	periodeRepository        domain.PeriodeRepository
 	generalJournalRepository domain.GeneralJournalRepository
 	contextTimeout           time.Duration
 }
 
-func NewGeneralLedgerUseCase(generalLedger domain.GeneralLedgerRepository, periode domain.PeriodeRepository, generalJournal domain.GeneralJournalRepository, t time.Duration) domain.GeneralLedgerUseCase {
-	return &generalLedgerUseCase{
-		generalLedgerRepository:  generalLedger,
+func NewLedgerUseCase(generalLedger domain.LedgerRepository, periode domain.PeriodeRepository, generalJournal domain.GeneralJournalRepository, t time.Duration) domain.LedgerUseCase {
+	return &ledgerUseCase{
+		ledgerRepository:         generalLedger,
 		periodeRepository:        periode,
 		generalJournalRepository: generalJournal,
 		contextTimeout:           t,
 	}
 }
 
-func (c *generalLedgerUseCase) FetchGeneralLedgerByID(ctx context.Context, id uint, opt bool) (map[string]any, error) {
+func (c *ledgerUseCase) FetchLedgerByID(ctx context.Context, id uint, opt bool) (map[string]any, error) {
 
-	res, err := c.generalLedgerRepository.RetrieveGeneralLedgerByID(id)
+	res, err := c.ledgerRepository.RetrieveLedgerByID(id)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (c *generalLedgerUseCase) FetchGeneralLedgerByID(ctx context.Context, id ui
 		if err != nil {
 			return nil, err
 		}
-		resGeneralJournal, err := c.generalLedgerRepository.GetGeneralLedgerByGeneralLedgerPeriodeId(resPeriode.ID)
+		resGeneralJournal, err := c.ledgerRepository.GetLedgerByPeriodeId(resPeriode.ID)
 		if err != nil {
 			return nil, err
 		}
@@ -54,48 +54,48 @@ func (c *generalLedgerUseCase) FetchGeneralLedgerByID(ctx context.Context, id ui
 	return payload, nil
 }
 
-func (c *generalLedgerUseCase) FetchGeneralLedgers(ctx context.Context) ([]domain.GeneralLedger, error) {
-	res, err := c.generalLedgerRepository.RetrieveAllGeneralLedger()
+func (c *ledgerUseCase) FetchLedgers(ctx context.Context) ([]domain.Ledger, error) {
+	res, err := c.ledgerRepository.RetrieveLedgers()
 	if err != nil {
 		return nil, err
 	}
 	return res, nil
 }
 
-func (c *generalLedgerUseCase) AddGeneralLedger(ctx context.Context, req *domain.GeneralLedger) (*domain.GeneralLedger, error) {
-	res, err := c.generalLedgerRepository.CreateGeneralLedger(req)
+func (c *ledgerUseCase) AddLedger(ctx context.Context, req *domain.Ledger) (*domain.Ledger, error) {
+	res, err := c.ledgerRepository.CreateLedger(req)
 	if err != nil {
 		return nil, err
 	}
 	return res, nil
 }
 
-func (c *generalLedgerUseCase) AddBulkGeneralLedger(ctx context.Context, req []*domain.GeneralLedger) ([]*domain.GeneralLedger, error) {
-	res, err := c.generalLedgerRepository.CreateBulkGeneralLedger(req)
+func (c *ledgerUseCase) AddBulkLedger(ctx context.Context, req []*domain.Ledger) ([]*domain.Ledger, error) {
+	res, err := c.ledgerRepository.CreateBulkLedger(req)
 	if err != nil {
 		return nil, err
 	}
 	return res, nil
 }
 
-func (c *generalLedgerUseCase) EditGeneralLedger(ctx context.Context, req *domain.GeneralLedger) (*domain.GeneralLedger, error) {
-	res, err := c.generalLedgerRepository.UpdateGeneralLedger(req)
+func (c *ledgerUseCase) EditLedger(ctx context.Context, req *domain.Ledger) (*domain.Ledger, error) {
+	res, err := c.ledgerRepository.UpdateLedger(req)
 	if err != nil {
 		return nil, err
 	}
 	return res, nil
 }
 
-func (c *generalLedgerUseCase) EditBulkGeneralLedger(ctx context.Context, req []*domain.GeneralLedger) ([]*domain.GeneralLedger, error) {
-	res, err := c.generalLedgerRepository.UpdateBulkGeneralLedger(req)
+func (c *ledgerUseCase) EditBulkLedger(ctx context.Context, req []*domain.Ledger) ([]*domain.Ledger, error) {
+	res, err := c.ledgerRepository.UpdateBulkLedger(req)
 	if err != nil {
 		return nil, err
 	}
 	return res, nil
 }
 
-func (c *generalLedgerUseCase) DeleteGeneralLedger(ctx context.Context, id uint) error {
-	err := c.generalLedgerRepository.DeleteGeneralLedger(id)
+func (c *ledgerUseCase) DeleteLedger(ctx context.Context, id uint) error {
+	err := c.ledgerRepository.DeleteLedger(id)
 	if err != nil {
 		return err
 	}

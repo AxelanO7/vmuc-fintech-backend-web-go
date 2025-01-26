@@ -108,7 +108,82 @@ func (c *periodeUseCase) FetchTrialBalancePeriode(ctx context.Context) ([]domain
 }
 
 func (c *periodeUseCase) AddPeriode(ctx context.Context, req *domain.Periode) (*domain.Periode, error) {
-	return c.periodeRepository.CreatePeriode(req)
+	fmt.Println("request", req)
+	// return c.periodeRepository.CreatePeriode(req)
+	periodes, err := c.periodeRepository.RetrieveAllPeriode()
+	if err != nil {
+		return nil, err
+	}
+
+	var resPeriode *domain.Periode
+	// check if period already exists
+	for i := range periodes {
+		// if periode already exists, return the periode
+		if periodes[i].Period == req.Period {
+			resPeriode = &periodes[i]
+			break
+		}
+		// if periode does not exist, create new periode
+		if i == len(periodes)-1 {
+			resPeriode, err = c.periodeRepository.CreatePeriode(&domain.Periode{
+				Period:      req.Period,
+				Description: req.Description,
+			})
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	if req.Payrolls != nil && len(req.Payrolls) > 0 {
+		fmt.Println("payroll", req.Payrolls)
+		for _, val := range req.Payrolls {
+			val.IdPeriode = resPeriode.ID
+			fmt.Println("payroll for", val)
+			_, err := c.payrollRepository.CreatePayroll(&val)
+			if err != nil {
+				return nil, err
+			}
+			resPeriode.Payrolls = append(resPeriode.Payrolls, val)
+		}
+	}
+	if req.AdjusmentEntries != nil && len(req.AdjusmentEntries) > 0 {
+		fmt.Println("adjusment", req.AdjusmentEntries)
+		for _, val := range req.AdjusmentEntries {
+			val.IdPeriode = resPeriode.ID
+			fmt.Println("adjusment for", val)
+			_, err := c.adjusmentEntriesRepository.CreateAdjusmentEntries(&val)
+			if err != nil {
+				return nil, err
+			}
+			resPeriode.AdjusmentEntries = append(resPeriode.AdjusmentEntries, val)
+		}
+	}
+	if req.GeneralJournal != nil && len(req.GeneralJournal) > 0 {
+		fmt.Println("general", req.GeneralJournal)
+		for _, val := range req.GeneralJournal {
+			val.IdPeriode = resPeriode.ID
+			fmt.Println("general for", val)
+			_, err := c.generalJournalRepository.CreateGeneralJournal(&val)
+			if err != nil {
+				return nil, err
+			}
+			resPeriode.GeneralJournal = append(resPeriode.GeneralJournal, val)
+		}
+	}
+	if req.TrialBalance != nil && len(req.TrialBalance) > 0 {
+		fmt.Println("trial", req.TrialBalance)
+		for _, val := range req.TrialBalance {
+			val.IdPeriode = resPeriode.ID
+			fmt.Println("trial for", val)
+			_, err := c.trialBalanceRepository.CreateTrialBalance(&val)
+			if err != nil {
+				return nil, err
+			}
+			resPeriode.TrialBalance = append(resPeriode.TrialBalance, val)
+		}
+	}
+	return resPeriode, nil
 }
 
 func (c *periodeUseCase) AddBulkPeriode(ctx context.Context, req []*domain.Periode) ([]*domain.Periode, error) {
@@ -188,7 +263,7 @@ func (c *periodeUseCase) AddPayrollPeriode(ctx context.Context, req *domain.Payr
 
 	var idPeriode uint
 
-	res, err := c.periodeRepository.GetBeriodeByPeriode(req.Period)
+	res, err := c.periodeRepository.GetPeriodeByPeriode(req.Period)
 	idPeriode = res.ID
 	if err != nil {
 		res, err := c.periodeRepository.CreatePeriode(&domain.Periode{
@@ -211,7 +286,7 @@ func (c *periodeUseCase) AddPayrollPeriode(ctx context.Context, req *domain.Payr
 		payload := domain.GeneralJournal{
 			IdPeriode:   idPeriode,
 			NameAccount: "beban gaji",
-			Date:        time.Now(),
+			Date:        time.Now().Format(time.RFC3339),
 			Information: "beban gaji",
 			Kredit:      float64(val.Total),
 			IdRef:       int(req.IdRef),

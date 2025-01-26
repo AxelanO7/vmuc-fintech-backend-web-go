@@ -30,7 +30,7 @@ func (a *posgrePeriodeRepository) RetrieveAllPeriode() ([]domain.Periode, error)
 	return res, nil
 }
 
-func (a *posgrePeriodeRepository) GetBeriodeByPeriode(periode string) (*domain.Periode, error) {
+func (a *posgrePeriodeRepository) GetPeriodeByPeriode(periode string) (*domain.Periode, error) {
 	var res domain.Periode
 	err := a.DB.
 		Model(domain.Periode{}).

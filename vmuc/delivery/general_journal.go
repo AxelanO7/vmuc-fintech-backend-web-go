@@ -16,18 +16,18 @@ func NewGeneralJournalHandler(c *fiber.App, das domain.GeneralJournalUseCase) {
 	handler := &GeneralJournalHandler{
 		GeneralJournalUC: das,
 	}
-	api := c.Group("/general-journal")
+	api := c.Group("/journal")
 
 	_ = api.Group("/public")
 
 	private := api.Group("/private")
-	private.Get("/employee", handler.GetAllGeneralJournal)
-	private.Get("/employee/:id", handler.GetGeneralJournalByID)
-	private.Post("/employee", handler.CreateGeneralJournal)
-	private.Post("/employees", handler.CreateBulkGeneralJournal)
-	private.Put("/employee/:id", handler.UpdateGeneralJournal)
-	private.Put("/employees", handler.UpdateBulkGeneralJournal)
-	private.Delete("/employee/:id", handler.DeleteGeneralJournal)
+	private.Get("/general", handler.GetAllGeneralJournal)
+	private.Get("/general/:id", handler.GetGeneralJournalByID)
+	private.Post("/general", handler.CreateGeneralJournal)
+	private.Post("/generals", handler.CreateBulkGeneralJournal)
+	private.Put("/general/:id", handler.UpdateGeneralJournal)
+	private.Put("/generals", handler.UpdateBulkGeneralJournal)
+	private.Delete("/general/:id", handler.DeleteGeneralJournal)
 }
 
 func (t *GeneralJournalHandler) GetAllGeneralJournal(c *fiber.Ctx) error {

@@ -31,7 +31,7 @@ func (c *worksheetUseCase) FetchWorksheetByID(ctx context.Context, id uint, opt 
 	}
 
 	if opt {
-		resPeriode, err := c.periodeRepository.GetBeriodeByPeriode(res.Date)
+		resPeriode, err := c.periodeRepository.GetPeriodeByPeriode(res.Date)
 		if err != nil {
 			return nil, err
 		}

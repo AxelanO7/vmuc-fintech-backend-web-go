@@ -29,7 +29,7 @@ func main() {
 	adjusmentEntriesRepo := repository.NewPostgreAdjusmentEntries(db.GormClient.DB)
 	generalJournalRepo := repository.NewPostgreGeneralJournal(db.GormClient.DB)
 	trialBalanceRepo := repository.NewPostgreTrialBalance(db.GormClient.DB)
-	generalLedgerRepo := repository.NewPostgreGeneralLedger(db.GormClient.DB)
+	ledgerRepo := repository.NewPostgreLedger(db.GormClient.DB)
 	worksheetRepo := repository.NewPostgreWorksheet(db.GormClient.DB)
 
 	timeoutContext := fiber.Config{}.ReadTimeout
@@ -42,7 +42,7 @@ func main() {
 	adjusmentEntriesUseCase := usecase.NewAdjusmentEntriesUseCase(adjusmentEntriesRepo, timeoutContext)
 	generalJournalUseCase := usecase.NewGeneralJournalUseCase(generalJournalRepo, timeoutContext)
 	trialBalanceUseCase := usecase.NewTrialBalanceUseCase(trialBalanceRepo, timeoutContext)
-	generalLedgerUseCase := usecase.NewGeneralLedgerUseCase(generalLedgerRepo, periodeRepo, generalJournalRepo, timeoutContext)
+	ledgerUseCase := usecase.NewLedgerUseCase(ledgerRepo, periodeRepo, generalJournalRepo, timeoutContext)
 	worksheetUseCase := usecase.NewWorksheetUseCase(worksheetRepo, generalJournalRepo, adjusmentEntriesRepo, periodeRepo, timeoutContext)
 
 	app := fiber.New(fiber.Config{})
@@ -65,7 +65,7 @@ func main() {
 		delivery.NewAdjusmentEntriesHandler(app, adjusmentEntriesUseCase)
 		delivery.NewGeneralJournalHandler(app, generalJournalUseCase)
 		delivery.NewTrialBalanceHandler(app, trialBalanceUseCase)
-		delivery.NewGeneralLedgerHandler(app, generalLedgerUseCase)
+		delivery.NewLedgerHandler(app, ledgerUseCase)
 		delivery.NewWorksheetHandler(app, worksheetUseCase)
 		log.Fatal(app.Listen(listenPort))
 		wg.Done()

@@ -10,8 +10,8 @@ import (
 type GeneralJournal struct {
 	ID          uint           `gorm:"primarykey;AUTO_INCREMENT" json:"id"`
 	NameAccount string         `json:"name_account"`
-	Date        time.Time      `json:"date"`
-	IdRef       int            `gorm:"null" json:"id_ref"`
+	Date        string         `json:"date"`
+	IdRef       int            `gorm:"not null" json:"id_ref"`
 	Information string         `json:"information"`
 	Debit       float64        `json:"debit"`
 	Kredit      float64        `json:"kredit"`

@@ -16,18 +16,18 @@ func NewAdjusmentEntriesHandler(c *fiber.App, das domain.AdjusmentEntriesUseCase
 	handler := &AdjusmentEntriesHandler{
 		AdjusmentEntriesUC: das,
 	}
-	api := c.Group("/adjusment-entries")
+	api := c.Group("/journal")
 
 	_ = api.Group("/public")
 
 	private := api.Group("/private")
-	private.Get("/employee", handler.GetAllAdjusmentEntries)
-	private.Get("/employee/:id", handler.GetAdjusmentEntriesByID)
-	private.Post("/employee", handler.CreateAdjusmentEntries)
-	private.Post("/employees", handler.CreateBulkAdjusmentEntries)
-	private.Put("/employee/:id", handler.UpdateAdjusmentEntries)
-	private.Put("/employees", handler.UpdateBulkAdjusmentEntries)
-	private.Delete("/employee/:id", handler.DeleteAdjusmentEntries)
+	private.Get("/adjustment", handler.GetAllAdjusmentEntries)
+	private.Get("/adjustment/:id", handler.GetAdjusmentEntriesByID)
+	private.Post("/adjustment", handler.CreateAdjusmentEntries)
+	private.Post("/adjustments", handler.CreateBulkAdjusmentEntries)
+	private.Put("/adjustment/:id", handler.UpdateAdjusmentEntries)
+	private.Put("/adjustments", handler.UpdateBulkAdjusmentEntries)
+	private.Delete("/adjustment/:id", handler.DeleteAdjusmentEntries)
 }
 
 func (t *AdjusmentEntriesHandler) GetAllAdjusmentEntries(c *fiber.Ctx) error {

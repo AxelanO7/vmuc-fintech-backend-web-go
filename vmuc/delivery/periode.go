@@ -25,6 +25,7 @@ func NewPeriodeHandler(c *fiber.App, das domain.PeriodeUseCase) {
 	private.Get("/adjusment-entries", handler.GetAllAdjusmentEntriesPeriode)
 	private.Get("/general-journal", handler.GetAllGeneralJournalPeriode)
 	private.Get("/trial-balance", handler.GetAllTrialBalancePeriode)
+	private.Get("/get-report-trial-balance", handler.GetTrialBalanceReportByPeriode)
 
 	general := private.Group("/general")
 	general.Get("/:id", handler.GetPeriodeByID)
@@ -107,6 +108,25 @@ func (t *PeriodeHandler) GetAllTrialBalancePeriode(c *fiber.Ctx) error {
 		"success": true,
 		"data":    res,
 		"message": "Successfully get all Periode",
+	})
+}
+
+func (t *PeriodeHandler) GetTrialBalanceReportByPeriode(c *fiber.Ctx) error {
+	periode := c.Params("periode")
+	res, err := t.PeriodeUC.GetTrialBalanceReportByPeriode(c.Context(), periode)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  500,
+			"success": false,
+			"message": err,
+			"error":   err.Error(),
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  200,
+		"success": true,
+		"data":    res,
+		"message": "Successfully get Periode by id",
 	})
 }
 

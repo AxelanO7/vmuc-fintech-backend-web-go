@@ -33,6 +33,7 @@ type PeriodeRepository interface {
 
 type PeriodeUseCase interface {
 	FetchPayrollPeriode(ctx context.Context) ([]Periode, error)
+	GetTrialBalanceReportByPeriode(ctx context.Context, periode string) (map[string]any, error)
 	FetchAdjusmentEntriesPeriode(ctx context.Context) ([]Periode, error)
 	FetchGeneralJournalPeriode(ctx context.Context) ([]Periode, error)
 	FetchTrialBalancePeriode(ctx context.Context) ([]Periode, error)

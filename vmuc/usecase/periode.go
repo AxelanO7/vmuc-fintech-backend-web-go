@@ -186,29 +186,35 @@ func (c *periodeUseCase) AddPayrollPeriode(ctx context.Context, req *domain.Payr
 	// }
 	// return req, nil
 
+	var idPeriode uint
+
 	res, err := c.periodeRepository.GetBeriodeByPeriode(req.Period)
+	idPeriode = res.ID
 	if err != nil {
-		_, err := c.periodeRepository.CreatePeriode(&domain.Periode{
+		res, err := c.periodeRepository.CreatePeriode(&domain.Periode{
 			Period:      req.Period,
 			Description: req.Description,
 		})
 		if err != nil {
 			return nil, fmt.Errorf("error creating period: %w", err)
 		}
+		idPeriode = res.ID
 	}
 
 	for _, val := range req.Payrolls {
-		val.IdPeriode = res.ID
+		val.IdPeriode = idPeriode
 		_, err := c.payrollRepository.CreatePayroll(&val)
 		if err != nil {
 			return nil, err
 		}
 
 		payload := domain.GeneralJournal{
+			IdPeriode:   idPeriode,
 			NameAccount: "beban gaji",
 			Date:        time.Now(),
 			Information: "beban gaji",
 			Kredit:      float64(val.Total),
+			IdRef:       int(req.IdRef),
 		}
 
 		_, err = c.generalJournalRepository.CreateGeneralJournal(&payload)

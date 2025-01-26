@@ -34,7 +34,7 @@ func (a *posgrePeriodeRepository) GetBeriodeByPeriode(periode string) (*domain.P
 	var res domain.Periode
 	err := a.DB.
 		Model(domain.Periode{}).
-		Where("periode = ?", periode).
+		Where("period = ?", periode).
 		Take(&res).Error
 	if err != nil {
 		return &domain.Periode{}, err

@@ -31,6 +31,24 @@ func (c *periodeUseCase) FetchPeriodeByID(ctx context.Context, id uint) (*domain
 	return c.periodeRepository.RetrievePeriodeByID(id)
 }
 
+func (c *periodeUseCase) GetTrialBalanceReportByPeriode(ctx context.Context, periode string) (map[string]any, error) {
+	res, err := c.periodeRepository.GetPeriodeByPeriode(periode)
+	if err != nil {
+		return nil, err
+	}
+
+	trialBalance, err := c.generalJournalRepository.GetGeneralJournalByGeneralJournalPeriodeId(res.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	payload := map[string]any{
+		"periode":       res,
+		"trial_balance": trialBalance,
+	}
+	return payload, nil
+}
+
 func (c *periodeUseCase) FetchPayrollPeriode(ctx context.Context) ([]domain.Periode, error) {
 	// Ambil semua data PayrollPeriode
 	payrollPeriodes, err := c.periodeRepository.RetrieveAllPeriode()

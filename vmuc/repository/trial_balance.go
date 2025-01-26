@@ -22,6 +22,7 @@ func (a *posgreTrialBalanceRepository) RetrieveAllTrialBalance() ([]domain.Trial
 	var res []domain.TrialBalance
 	err := a.DB.
 		Model(domain.TrialBalance{}).
+		Preload("Ref").
 		Find(&res).Error
 	if err != nil {
 		return []domain.TrialBalance{}, err

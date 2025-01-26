@@ -25,7 +25,7 @@ func NewPeriodeHandler(c *fiber.App, das domain.PeriodeUseCase) {
 	private.Get("/adjusment-entries", handler.GetAllAdjusmentEntriesPeriode)
 	private.Get("/general-journal", handler.GetAllGeneralJournalPeriode)
 	private.Get("/trial-balance", handler.GetAllTrialBalancePeriode)
-	private.Get("/get-report-trial-balance", handler.GetTrialBalanceReportByPeriode)
+	private.Get("/get-report-trial-balance/:periode", handler.GetTrialBalanceReportByPeriode)
 
 	general := private.Group("/general")
 	general.Get("/:id", handler.GetPeriodeByID)

@@ -16,19 +16,19 @@ func NewWorksheetHandler(c *fiber.App, das domain.WorksheetUseCase) {
 	handler := &WorksheetHandler{
 		WorksheetUC: das,
 	}
-	api := c.Group("/worksheet")
+	api := c.Group("/journal")
 
 	_ = api.Group("/public")
 
 	private := api.Group("/private")
-	private.Get("/employee", handler.GetAllWorksheet)
-	private.Get("/employee/:id", handler.GetWorksheetByID)
+	private.Get("/work-sheet", handler.GetAllWorksheet)
+	private.Get("/work-sheet/:id", handler.GetWorksheetByID)
 	private.Get("/report-worksheet/:id", handler.GetWorksheetByID)
-	private.Post("/employee", handler.CreateWorksheet)
-	private.Post("/employees", handler.CreateBulkWorksheet)
-	private.Put("/employee/:id", handler.UpdateWorksheet)
-	private.Put("/employees", handler.UpdateBulkWorksheet)
-	private.Delete("/employee/:id", handler.DeleteWorksheet)
+	private.Post("/work-sheet", handler.CreateWorksheet)
+	private.Post("/work-sheets", handler.CreateBulkWorksheet)
+	private.Put("/work-sheet/:id", handler.UpdateWorksheet)
+	private.Put("/work-sheets", handler.UpdateBulkWorksheet)
+	private.Delete("/work-sheet/:id", handler.DeleteWorksheet)
 }
 
 func (t *WorksheetHandler) GetAllWorksheet(c *fiber.Ctx) error {

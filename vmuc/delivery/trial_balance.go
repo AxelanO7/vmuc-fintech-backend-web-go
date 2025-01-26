@@ -16,18 +16,18 @@ func NewTrialBalanceHandler(c *fiber.App, das domain.TrialBalanceUseCase) {
 	handler := &TrialBalanceHandler{
 		TrialBalanceUC: das,
 	}
-	api := c.Group("/trial-balance")
+	api := c.Group("/journal")
 
 	_ = api.Group("/public")
 
 	private := api.Group("/private")
-	private.Get("/employee", handler.GetAllTrialBalance)
-	private.Get("/employee/:id", handler.GetTrialBalanceByID)
-	private.Post("/employee", handler.CreateTrialBalance)
-	private.Post("/employees", handler.CreateBulkTrialBalance)
-	private.Put("/employee/:id", handler.UpdateTrialBalance)
-	private.Put("/employees", handler.UpdateBulkTrialBalance)
-	private.Delete("/employee/:id", handler.DeleteTrialBalance)
+	private.Get("/trial-balance", handler.GetAllTrialBalance)
+	private.Get("/trial-balance/:id", handler.GetTrialBalanceByID)
+	private.Post("/trial-balance", handler.CreateTrialBalance)
+	private.Post("/trial-balances", handler.CreateBulkTrialBalance)
+	private.Put("/trial-balance/:id", handler.UpdateTrialBalance)
+	private.Put("/trial-balances", handler.UpdateBulkTrialBalance)
+	private.Delete("/trial-balance/:id", handler.DeleteTrialBalance)
 }
 
 func (t *TrialBalanceHandler) GetAllTrialBalance(c *fiber.Ctx) error {

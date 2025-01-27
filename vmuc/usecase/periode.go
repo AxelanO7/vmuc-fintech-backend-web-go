@@ -43,7 +43,7 @@ func (c *periodeUseCase) GetTrialBalanceReportByPeriode(ctx context.Context, per
 	}
 
 	payload := map[string]any{
-		"periode":       res,
+		"period":        res,
 		"trial_balance": trialBalance,
 	}
 	return payload, nil

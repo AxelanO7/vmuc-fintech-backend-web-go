@@ -132,8 +132,20 @@ func (c *periodeUseCase) AddPeriode(ctx context.Context, req *domain.Periode) (*
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("periodes", periodes)
 
 	var resPeriode *domain.Periode
+
+	// check if period is empty
+	if len(periodes) == 0 {
+		resPeriode, err = c.periodeRepository.CreatePeriode(&domain.Periode{
+			Period:      req.Period,
+			Description: req.Description,
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
 	// check if period already exists
 	for i := range periodes {
 		// if periode already exists, return the periode
@@ -152,6 +164,7 @@ func (c *periodeUseCase) AddPeriode(ctx context.Context, req *domain.Periode) (*
 			}
 		}
 	}
+	fmt.Println("resPeriode", resPeriode)
 
 	if req.Payrolls != nil && len(req.Payrolls) > 0 {
 		fmt.Println("payroll", req.Payrolls)

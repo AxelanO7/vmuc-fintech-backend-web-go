@@ -45,62 +45,71 @@ func (c *worksheetUseCase) FetchWorksheetByID(ctx context.Context, id uint, opt 
 			return nil, err
 		}
 
+		// Array to store the result
 		payloadArray := []map[string]any{}
 
+		// Loop through each general journal entry
 		for _, generalJournal := range resGeneralJournal {
-			for _, adjusmentEntry := range resAdjusmentEntries {
+			// Check if the generalJournal is valid (ensure it has necessary data)
+			if generalJournal.NameAccount == "" {
+				continue // Skip invalid entries
+			}
 
+			// Loop through each adjustment entry
+			for _, adjusmentEntry := range resAdjusmentEntries {
+				// Ensure the adjustment entry is valid (has necessary data)
+				if adjusmentEntry.NameAccount == "" {
+					continue // Skip invalid entries
+				}
+
+				// Check if the accounts match
 				if generalJournal.NameAccount == adjusmentEntry.NameAccount {
 					var kredit, debit float64
 
+					// Handle various cases of debit and credit
 					if generalJournal.Kredit != 0 && adjusmentEntry.Debit != 0 {
-
 						result := generalJournal.Kredit - adjusmentEntry.Debit
 						if result < 0 {
-
 							kredit = -result
 						} else {
-
 							debit = result
 						}
 					} else if generalJournal.Debit != 0 && adjusmentEntry.Kredit != 0 {
-
 						result := generalJournal.Debit - adjusmentEntry.Kredit
 						if result < 0 {
-
 							kredit = -result
 						} else {
-
 							debit = result
 						}
 					} else if generalJournal.Debit != 0 && adjusmentEntry.Debit != 0 {
-
 						debit = generalJournal.Debit + adjusmentEntry.Debit
 					} else if generalJournal.Kredit != 0 && adjusmentEntry.Kredit != 0 {
-
 						kredit = generalJournal.Kredit + adjusmentEntry.Kredit
 					}
 
+					// Prepare payload
 					payload := map[string]any{
 						"name_account": generalJournal.NameAccount,
 						"kredit":       kredit,
 						"debit":        debit,
 					}
 
+					// Append the payload to the result array
 					payloadArray = append(payloadArray, payload)
 				}
 			}
 		}
 
+		// Combine the worksheet and its related data into the result
 		payloadResult := map[string]any{
 			"worksheet":      res,
 			"data_worksheet": payloadArray,
 		}
 
 		return payloadResult, nil
-
 	}
 
+	// If no options are set, return just the worksheet data
 	payload := map[string]any{
 		"worksheet": res,
 	}

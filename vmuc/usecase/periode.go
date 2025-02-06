@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"sort"
 	"time"
 	"vmuc-fintech-backend-web-go/domain"
 )
@@ -93,6 +94,11 @@ func (c *periodeUseCase) FetchGeneralJournalPeriode(ctx context.Context) ([]doma
 	if err != nil {
 		return nil, err
 	}
+
+	// sort by ascending date
+	sort.Slice(payrollPeriodes, func(i, j int) bool {
+		return payrollPeriodes[i].Period < payrollPeriodes[j].Period
+	})
 
 	// Ambil data Payroll untuk setiap PayrollPeriode
 	for i := range payrollPeriodes {

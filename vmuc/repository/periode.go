@@ -26,7 +26,7 @@ func (a *posgrePeriodeRepository) RetrieveAllPeriode() ([]domain.Periode, error)
 	if err != nil {
 		return []domain.Periode{}, err
 	}
-	fmt.Println("retrieve all payroll ", res)
+	fmt.Println("retrieve all periode ", res)
 	return res, nil
 }
 
@@ -42,7 +42,7 @@ func (a *posgrePeriodeRepository) GetPeriodeByPeriode(periode string) (*domain.P
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return &domain.Periode{}, fmt.Errorf("record not found")
 	}
-	fmt.Println("retrieve payroll by id ", res)
+	fmt.Println("retrieve periode by id ", res)
 	return &res, nil
 }
 
@@ -59,7 +59,7 @@ func (a *posgrePeriodeRepository) RetrievePeriodeByID(id uint) (*domain.Periode,
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return &domain.Periode{}, fmt.Errorf("record not found")
 	}
-	fmt.Println("retrieve payroll by id ", res)
+	fmt.Println("retrieve periode by id ", res)
 	return &res, nil
 }
 
@@ -70,7 +70,7 @@ func (a *posgrePeriodeRepository) CreatePeriode(Periode *domain.Periode) (*domai
 	if err != nil {
 		return &domain.Periode{}, err
 	}
-	fmt.Println("create payroll ", Periode)
+	fmt.Println("create periode ", Periode)
 	return Periode, nil
 }
 
@@ -81,7 +81,7 @@ func (a *posgrePeriodeRepository) CreateBulkPeriode(payrolls []*domain.Periode) 
 	if err != nil {
 		return []*domain.Periode{}, err
 	}
-	fmt.Println("create bulk payroll ", payrolls)
+	fmt.Println("create bulk periode ", payrolls)
 	return payrolls, nil
 }
 
@@ -93,7 +93,7 @@ func (a *posgrePeriodeRepository) UpdatePeriode(payroll *domain.Periode) (*domai
 	if err != nil {
 		return &domain.Periode{}, err
 	}
-	fmt.Println("update payroll ", payroll)
+	fmt.Println("update periode ", payroll)
 	return payroll, nil
 }
 
@@ -104,7 +104,7 @@ func (a *posgrePeriodeRepository) UpdateBulkPeriode(payrolls []*domain.Periode) 
 	if err != nil {
 		return []*domain.Periode{}, err
 	}
-	fmt.Println("update bulk payroll ", payrolls)
+	fmt.Println("update bulk periode ", payrolls)
 	return payrolls, nil
 }
 
@@ -116,6 +116,6 @@ func (a *posgrePeriodeRepository) DeletePeriode(id uint) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("delete payroll ", id)
+	fmt.Println("delete periode ", id)
 	return nil
 }

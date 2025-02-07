@@ -32,7 +32,7 @@ func NewWorksheetHandler(c *fiber.App, das domain.WorksheetUseCase) {
 }
 
 func (t *WorksheetHandler) GetAllWorksheet(c *fiber.Ctx) error {
-	res, err := t.WorksheetUC.FetchWorksheets(c.Context())
+	res, err := t.WorksheetUC.FetchWorksheets(c.Context(), true)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  500,

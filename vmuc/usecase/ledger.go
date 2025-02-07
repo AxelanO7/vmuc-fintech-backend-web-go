@@ -34,7 +34,7 @@ func (c *ledgerUseCase) FetchLedgerByID(ctx context.Context, id uint, opt bool) 
 		if err != nil {
 			return nil, err
 		}
-		resGeneralJournal, err := c.ledgerRepository.GetLedgerByPeriodeId(resPeriode.ID)
+		resGeneralJournal, err := c.generalJournalRepository.GetGeneralJournalByGeneralJournalPeriodeId(resPeriode.ID)
 		if err != nil {
 			return nil, err
 		}
@@ -58,6 +58,18 @@ func (c *ledgerUseCase) FetchLedgers(ctx context.Context) ([]domain.Ledger, erro
 	res, err := c.ledgerRepository.RetrieveLedgers()
 	if err != nil {
 		return nil, err
+	}
+	for i := range res {
+		resPeriode, err := c.periodeRepository.GetPeriodeByPeriode(res[i].Date)
+		if err != nil {
+			return nil, err
+		}
+		resGeneralJournal, err := c.generalJournalRepository.GetGeneralJournalByGeneralJournalPeriodeId(resPeriode.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		res[i].GeneralJournal = resGeneralJournal
 	}
 	return res, nil
 }

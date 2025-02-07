@@ -117,12 +117,106 @@ func (c *worksheetUseCase) FetchWorksheetByID(ctx context.Context, id uint, opt 
 	return payload, nil
 }
 
-func (c *worksheetUseCase) FetchWorksheets(ctx context.Context) ([]domain.Worksheet, error) {
+func (c *worksheetUseCase) FetchWorksheets(ctx context.Context, opt bool) ([]map[string]any, error) {
 	res, err := c.worksheetRepository.RetrieveAllWorksheet()
 	if err != nil {
 		return nil, err
 	}
-	return res, nil
+
+	if opt {
+		// Array untuk menyimpan hasil akhir
+		var payloadArray []map[string]any
+
+		// Loop melalui setiap worksheet yang diperoleh
+		for _, worksheet := range res {
+			resPeriode, err := c.periodeRepository.GetPeriodeByPeriode(worksheet.Date)
+			if err != nil {
+				return nil, err
+			}
+			resGeneralJournal, err := c.generalLedgerRepository.GetGeneralJournalByGeneralJournalPeriodeId(resPeriode.ID)
+			if err != nil {
+				return nil, err
+			}
+
+			resAdjusmentEntries, err := c.adjusmentEntriesRepostory.GetAdjusmentEntriesByAdjusmentEntriesPeriodeId(resPeriode.ID)
+			if err != nil {
+				return nil, err
+			}
+
+			// Array untuk menyimpan hasil pengolahan data worksheet ini
+			var worksheetPayloadArray []map[string]any
+
+			// Loop melalui setiap entri jurnal umum
+			for _, generalJournal := range resGeneralJournal {
+				if generalJournal.NameAccount == "" {
+					continue // Skip jika tidak valid
+				}
+
+				// Loop melalui setiap entri penyesuaian
+				for _, adjusmentEntry := range resAdjusmentEntries {
+					if adjusmentEntry.NameAccount == "" {
+						continue // Skip jika tidak valid
+					}
+
+					// Cek apakah akun cocok
+					if generalJournal.NameAccount == adjusmentEntry.NameAccount {
+						var kredit, debit float64
+
+						// Penyesuaian debit dan kredit
+						if generalJournal.Kredit != 0 && adjusmentEntry.Debit != 0 {
+							result := generalJournal.Kredit - adjusmentEntry.Debit
+							if result < 0 {
+								kredit = -result
+							} else {
+								debit = result
+							}
+						} else if generalJournal.Debit != 0 && adjusmentEntry.Kredit != 0 {
+							result := generalJournal.Debit - adjusmentEntry.Kredit
+							if result < 0 {
+								kredit = -result
+							} else {
+								debit = result
+							}
+						} else if generalJournal.Debit != 0 && adjusmentEntry.Debit != 0 {
+							debit = generalJournal.Debit + adjusmentEntry.Debit
+						} else if generalJournal.Kredit != 0 && adjusmentEntry.Kredit != 0 {
+							kredit = generalJournal.Kredit + adjusmentEntry.Kredit
+						}
+
+						// Simpan hasil dalam payload
+						payload := map[string]any{
+							"name_account": generalJournal.NameAccount,
+							"kredit":       kredit,
+							"debit":        debit,
+						}
+
+						worksheetPayloadArray = append(worksheetPayloadArray, payload)
+					}
+				}
+			}
+
+			// Gabungkan worksheet dan data terkait
+			payloadResult := map[string]any{
+				"worksheet":      worksheet,
+				"data_worksheet": worksheetPayloadArray,
+			}
+
+			// Tambahkan ke array hasil akhir
+			payloadArray = append(payloadArray, payloadResult)
+		}
+
+		// Kembalikan hasil dalam bentuk array karena kita mengambil semua worksheet
+		return payloadArray, nil
+	}
+
+	payload := []map[string]any{
+		{
+			"worksheet": res,
+		},
+	}
+
+	// Jika `opt` tidak dipilih, kembalikan hanya data worksheet
+	return payload, nil
 }
 
 func (c *worksheetUseCase) AddWorksheet(ctx context.Context, req *domain.Worksheet) (*domain.Worksheet, error) {

@@ -8,12 +8,13 @@ import (
 )
 
 type Ledger struct {
-	ID                uint           `gorm:"primarykey;AUTO_INCREMENT" json:"id"`
-	NameGeneralLedger string         `json:"name_general_ledger"`
-	Date              string         `json:"date"`
-	CreatedAt         *time.Time     `json:"created_at"`
-	UpdatedAt         *time.Time     `json:"updated_at"`
-	DeletedAt         gorm.DeletedAt `gorm:"index" json:"deleted_at"`
+	ID                uint             `gorm:"primarykey;AUTO_INCREMENT" json:"id"`
+	NameGeneralLedger string           `json:"name_general_ledger"`
+	Date              string           `json:"date"`
+	GeneralJournal    []GeneralJournal `gorm:"-" json:"general_journal"`
+	CreatedAt         *time.Time       `json:"created_at"`
+	UpdatedAt         *time.Time       `json:"updated_at"`
+	DeletedAt         gorm.DeletedAt   `gorm:"index" json:"deleted_at"`
 }
 
 type LedgerRepository interface {

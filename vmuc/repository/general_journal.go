@@ -97,13 +97,16 @@ func (a *posgreGeneralJournalRepository) UpdateGeneralJournal(GeneralJournal *do
 }
 
 func (a *posgreGeneralJournalRepository) UpdateBulkGeneralJournal(GeneralJournals []*domain.GeneralJournal) ([]*domain.GeneralJournal, error) {
-	err := a.DB.
-		Model(domain.GeneralJournal{}).
-		Updates(&GeneralJournals).Error
-	if err != nil {
-		return []*domain.GeneralJournal{}, err
+	for _, val := range GeneralJournals {
+		err := a.DB.
+			Model(domain.GeneralJournal{}).
+			Where("id = ?", val.ID).
+			Updates(val).Error
+		if err != nil {
+			fmt.Println("update bulk GeneralJournal ", GeneralJournals)
+			return []*domain.GeneralJournal{}, err
+		}
 	}
-	fmt.Println("update bulk GeneralJournal ", GeneralJournals)
 	return GeneralJournals, nil
 }
 

@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 	"time"
 	"vmuc-fintech-backend-web-go/domain"
 )
@@ -59,6 +60,7 @@ func (c *generalJournalUseCase) EditGeneralJournal(ctx context.Context, req *dom
 }
 
 func (c *generalJournalUseCase) EditBulkGeneralJournal(ctx context.Context, req []*domain.GeneralJournal) ([]*domain.GeneralJournal, error) {
+	fmt.Println(&req)
 	res, err := c.generalJournalRepository.UpdateBulkGeneralJournal(req)
 	if err != nil {
 		return nil, err

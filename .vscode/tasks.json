@@ -5,7 +5,6 @@
       "label": "Run Back end",
       "type": "shell",
       "command": "cd app; go run main.go;",
-      "problemMatcher": ["$vite"],
       "isBackground": true
     },
     {
